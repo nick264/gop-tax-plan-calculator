@@ -61,7 +61,7 @@
 /******/ 	
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "d640044850afcb963c7c"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "cba42e4545b67d03daee"; // eslint-disable-line no-unused-vars
 /******/ 	var hotRequestTimeout = 10000;
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule; // eslint-disable-line no-unused-vars
@@ -1483,7 +1483,6 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.calculateFromInputs = calculateFromInputs;
-
 function calc_tax(amount, brackets) {
   var tax = 0;
   var last_bracket = 0;
@@ -1520,8 +1519,12 @@ var rules = {
       "PersonalExemption": 4050,
       "PersonalExemptionPhaseOut": 266700,
       "ChildTaxCredit": 1000,
-      "ChildTaxCreditPhaseOut": 75000
-      // "AMTDeduction"
+      "ChildTaxCreditPhaseOut": 75000,
+      "AMTExemption": 54300,
+      "AMTPhaseOut": 120700,
+      "AMTHighThreshold": 187800,
+      "AMTRelevant": true
+
     },
     "Married": {
       "Brackets": current_married,
@@ -1529,7 +1532,11 @@ var rules = {
       "PersonalExemption": 4050,
       "PersonalExemptionPhaseOut": 320000,
       "ChildTaxCredit": 1000,
-      "ChildTaxCreditPhaseOut": 115000
+      "ChildTaxCreditPhaseOut": 115000,
+      "AMTExemption": 84500,
+      "AMTPhaseOut": 160900,
+      "AMTHighThreshold": 187800,
+      "AMTRelevant": true
 
     } },
   "House": {
@@ -1539,7 +1546,8 @@ var rules = {
       "PersonalExemption": 0,
       "PersonalExemptionPhaseOut": 320000,
       "ChildTaxCredit": 1600,
-      "ChildTaxCreditPhaseOut": 115000 //https://www.cbpp.org/research/federal-tax/house-tax-bills-child-tax-credit-increase-excludes-thousands-of-children-in-low
+      "ChildTaxCreditPhaseOut": 115000, //https://www.cbpp.org/research/federal-tax/house-tax-bills-child-tax-credit-increase-excludes-thousands-of-children-in-low
+      "AMTRelevant": false
     },
     "Married": {
       "Brackets": house_married,
@@ -1547,7 +1555,8 @@ var rules = {
       "PersonalExemption": 0,
       "PersonalExemptionPhaseOut": 320000,
       "ChildTaxCredit": 1600,
-      "ChildTaxCreditPhaseOut": 230000
+      "ChildTaxCreditPhaseOut": 230000,
+      "AMTRelevant": false
     } },
   "Senate": {
     "Single": {
@@ -1556,7 +1565,12 @@ var rules = {
       "PersonalExemption": 0,
       "PersonalExemptionPhaseOut": 320000, //unused
       "ChildTaxCredit": 2000,
-      "ChildTaxCreditPhaseOut": 500000 //https://www.cbpp.org/research/federal-tax/senate-tax-bills-child-tax-credit-increase-provides-only-token-help-to-millions
+      "ChildTaxCreditPhaseOut": 500000, //https://www.cbpp.org/research/federal-tax/senate-tax-bills-child-tax-credit-increase-provides-only-token-help-to-millions
+      "AMTExemption": 70300,
+      "AMTPhaseOut": 156300,
+      //  "AMTExemption":54300/50600 * 70300,
+      //  "AMTPhaseOut":120700/112500 * 156300,  "AMTHighThreshold":187800,
+      "AMTRelevant": true
     },
     "Married": {
       "Brackets": senate_married,
@@ -1564,10 +1578,22 @@ var rules = {
       "PersonalExemption": 0,
       "PersonalExemptionPhaseOut": 320000,
       "ChildTaxCredit": 2000,
-      "ChildTaxCreditPhaseOut": 500000
+      "ChildTaxCreditPhaseOut": 500000,
+      "AMTExemption": 109400,
+      "AMTPhaseOut": 208400,
+      //  "AMTExemption":84500/78750*109400,
+      //  "AMTPhaseOut":160900/150000 * 208400,
+      "AMTHighThreshold": 187800,
+      "AMTRelevant": true
     } }
 
 };
+
+function calc_amt(amt_notional, exemption, phaseout, threshold) {
+  var adjusted_exemption = reduce(exemption, amt_notional, phaseout, 1, .25, true);
+  var taxable_amt_income = amt_notional - adjusted_exemption;
+  return { "Income": taxable_amt_income, "Tax": calc_tax(taxable_amt_income, [[threshold, 26], [1e20, 28]]) };
+}
 
 function reduce(total_amount, income, threshold, derate_step, derate, dollars_not_percent) {
   var diff = income - threshold;
@@ -1577,7 +1603,6 @@ function reduce(total_amount, income, threshold, derate_step, derate, dollars_no
 }
 
 function calc_taxes(inputs) {
-  console.log('calc taxes inputs: ', inputs);
   var amount = inputs.Amount;
   var outputs = {};
   var sum_deductions = 0;
@@ -1607,17 +1632,36 @@ function calc_taxes(inputs) {
 
   outputs['GrossIncome'] = inputs.GrossIncome;
   outputs.TaxableIncome = outputs.GrossIncome - outputs.TotalDeductionsAndExemptions;
-  outputs.TotalTax = calc_tax(outputs.TaxableIncome, relevant_rules.Brackets);
-  outputs.EffectiveTaxRate = outputs.TotalTax / outputs.TaxableIncome;
+  outputs.TotalTaxExAMT = calc_tax(outputs.TaxableIncome, relevant_rules.Brackets);
+  outputs.EffectiveTaxRate = outputs.TotalTaxExAMT / outputs.TaxableIncome;
   var ctc = inputs.DependentChildren * relevant_rules.ChildTaxCredit;
   outputs.ChildTaxCredit = reduce(ctc, inputs.GrossIncome, relevant_rules.ChildTaxCreditPhaseOut, 1000, 50 * inputs.DependentChildren, true);
 
-  outputs.Child;
+  if (relevant_rules.AMTRelevant) {
+    var amt_notional = inputs.GrossIncome - inputs.MortgageInterest - inputs.Charity;
+    exemption = relevant_rules.AMTExemption;
+    var amt_returns = calc_amt(amt_notional, relevant_rules.AMTExemption, relevant_rules.AMTPhaseOut, relevant_rules.AMTHighThreshold);
+    outputs.AMTIncome = amt_returns.Income;
+    outputs.AMT = amt_returns.Tax;
+  } else {
+    outputs.AMTIncome = 0;
+    outputs.AMT = 0;
+  }
+
+  if (outputs.AMT > outputs.TotalTaxExAMT) {
+    outputs.AMTActive = true;
+    outputs.TotalTax = outputs.AMT;
+  } else {
+    outputs.AMTActive = false;
+    outputs.TotalTax = outputs.TotalTaxExAMT;
+  }
+
+  outputs.EffectiveTaxRateOnGross = outputs.TotalTax / outputs.GrossIncome;
 
   return outputs;
 }
 
-//var res = calc_tax(4184000, fed_single);
+// //var res = calc_tax(4184000, fed_single);
 // var inputs = {}
 // inputs.GrossIncome = 200000
 // inputs.FilingStatus = 'Single'
@@ -1680,6 +1724,8 @@ var _temp = function () {
   __REACT_HOT_LOADER__.register(senate_married, "senate_married", "/Users/nicks/Development/tax-calculator/client/utils/calculator.js");
 
   __REACT_HOT_LOADER__.register(rules, "rules", "/Users/nicks/Development/tax-calculator/client/utils/calculator.js");
+
+  __REACT_HOT_LOADER__.register(calc_amt, "calc_amt", "/Users/nicks/Development/tax-calculator/client/utils/calculator.js");
 
   __REACT_HOT_LOADER__.register(reduce, "reduce", "/Users/nicks/Development/tax-calculator/client/utils/calculator.js");
 
