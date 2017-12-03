@@ -4,26 +4,32 @@ import _ from 'lodash'
 
 import formatNumber from 'format-number'
 
-const Result = ({calculate}) => {
+import { calculateFromInputs } from '../utils/calculator'
+
+const Result = ({input}) => {
+  const resultsCurrent = calculateFromInputs(input,'Current')
+  const resultsHouse = calculateFromInputs(input,'House')
+  const resultsSenate = calculateFromInputs(input,'Senate')
+
   return(
     <table>
-      {
-        _.map(calculate,(v,k) => {
-          return(
-            <tr>
-              <td>{k}</td>
-              <td>{v}</td>
-            </tr>
-          )
-        })
-      }
+      <tr>
+        <td>Current</td>
+        <td>House</td>
+        <td>Senate</td>
+      </tr>
+      <tr>
+        <td>{resultsCurrent.TotalTax}</td>
+        <td>{resultsHouse.TotalTax}</td>
+        <td>{resultsSenate.TotalTax}</td>
+      </tr>
     </table>
   )
 }
 
 const mapStateToProps = (state) => {
   return({
-    calculate: state.calculate
+    input: state.input
   })
 }
 
