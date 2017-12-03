@@ -55,7 +55,15 @@ class Index extends Component {
                 <Button active={input.filingStatus == 'married'} onClick={(e) => dispatch(updateInputField('filingStatus','married'))}>Married</Button>
               </Button.Group>
             </td>
-          </tr>        
+          </tr>   
+          <tr>
+            <td><label htmlFor='dependentChildrenCount'>Children</label></td>
+            <td><Input type='text' id='dependentChildrenCount' value={input.dependentChildrenCount} onChange={this._handleInputChange('dependentChildrenCount')}/></td>
+          </tr>
+          <tr>
+            <td><label htmlFor='personalExemptions'>Personal Exemptions</label></td>
+            <td><Input type='text' id='personalExemptions' value={input.personalExemptions} onChange={this._handleInputChange('personalExemptions')}/></td>
+          </tr>
           <tr>
             <td><label htmlFor='itemize'>Itemize?</label></td>
             <td>
@@ -65,80 +73,75 @@ class Index extends Component {
                 <Button active={input.itemize == true} onClick={(e) => dispatch(updateInputField('itemize',true))}>Itemized</Button>
               </Button.Group>
             </td>
-          </tr>        
-          <tr>
-            <td><label htmlFor='dependentChildrenCount'>Children</label></td>
-            <td><Input type='text' id='dependentChildrenCount' value={input.dependentChildrenCount} onChange={this._handleInputChange('dependentChildrenCount')}/></td>
-          </tr>
-          <tr>
-            <td><label htmlFor='mortgageInterest'>Mortgage Interest</label></td>
-            <td>
-              <Input 
-                type='text'
-                id='mortgageInterest'
-                labelPosition='left'
-              >
-                <Label
-                  basic
-                  content='$'
-                />
-                <NumberFormat value={input.mortgageInterest} thousandSeparator={true} onValueChange={({value}) => this._updateField('mortgageInterest',value)}/>
-              </Input>
-            </td>
-          </tr>
-          <tr>
-            <td><label htmlFor='charitableDonations'>Charitable Donations</label></td>
-            <td>
-              <Input 
-                type='text'
-                id='charitableDonations'
-                labelPosition='left'
-              >
-                <Label
-                  basic
-                  content='$'
-                />
-                <NumberFormat value={input.charitableDonations} thousandSeparator={true} onValueChange={({value}) => this._updateField('charitableDonations',value)}/>
-              </Input>
-            </td>
-          </tr>
-          <tr>
-            <td><label htmlFor='stateLocalPropertyTaxes'>State/Local Property Taxes</label></td>
-            <td>
-              <Input 
-                type='text'
-                id='stateLocalPropertyTaxes'
-                labelPosition='left'
-              >
-                <Label
-                  basic
-                  content='$'
-                />
-                <NumberFormat value={input.stateLocalPropertyTaxes} thousandSeparator={true} onValueChange={({value}) => this._updateField('stateLocalPropertyTaxes',value)}/>
-              </Input>
-            </td>
-          </tr>
-          <tr>
-            <td><label htmlFor='stateLocalIncomeTaxes'>State/Local Income Taxes</label></td>
-            <td>
-              <Input 
-                type='text'
-                id='stateLocalIncomeTaxes'
-                labelPosition='left'
-              >
-                <Label
-                  basic
-                  content='$'
-                />
-                <NumberFormat value={input.stateLocalIncomeTaxes} thousandSeparator={true} onValueChange={({value}) => this._updateField('stateLocalIncomeTaxes',value)}/>
-              </Input>
-            </td>
-          </tr>
-          <tr>
-            <td><label htmlFor='personalExemptions'>Personal Exemptions</label></td>
-            <td><Input type='text' id='personalExemptions' value={input.personalExemptions} onChange={this._handleInputChange('personalExemptions')}/></td>
-          </tr>
-
+          </tr>                  
+          {
+            input.itemize && [
+              <tr>
+                <td><label htmlFor='mortgageInterest'>Mortgage Interest</label></td>
+                <td>
+                  <Input 
+                    type='text'
+                    id='mortgageInterest'
+                    labelPosition='left'
+                  >
+                    <Label
+                      basic
+                      content='$'
+                    />
+                    <NumberFormat value={input.mortgageInterest} thousandSeparator={true} onValueChange={({value}) => this._updateField('mortgageInterest',value)}/>
+                  </Input>
+                </td>
+              </tr>,
+              <tr>
+                <td><label htmlFor='charitableDonations'>Charitable Donations</label></td>
+                <td>
+                  <Input 
+                    type='text'
+                    id='charitableDonations'
+                    labelPosition='left'
+                  >
+                    <Label
+                      basic
+                      content='$'
+                    />
+                    <NumberFormat value={input.charitableDonations} thousandSeparator={true} onValueChange={({value}) => this._updateField('charitableDonations',value)}/>
+                  </Input>
+                </td>
+              </tr>,
+              <tr>
+                <td><label htmlFor='stateLocalPropertyTaxes'>State/Local Property Taxes</label></td>
+                <td>
+                  <Input 
+                    type='text'
+                    id='stateLocalPropertyTaxes'
+                    labelPosition='left'
+                  >
+                    <Label
+                      basic
+                      content='$'
+                    />
+                    <NumberFormat value={input.stateLocalPropertyTaxes} thousandSeparator={true} onValueChange={({value}) => this._updateField('stateLocalPropertyTaxes',value)}/>
+                  </Input>
+                </td>
+              </tr>,
+              <tr>
+                <td><label htmlFor='stateLocalIncomeTaxes'>State/Local Income Taxes</label></td>
+                <td>
+                  <Input 
+                    type='text'
+                    id='stateLocalIncomeTaxes'
+                    labelPosition='left'
+                  >
+                    <Label
+                      basic
+                      content='$'
+                    />
+                    <NumberFormat value={input.stateLocalIncomeTaxes} thousandSeparator={true} onValueChange={({value}) => this._updateField('stateLocalIncomeTaxes',value)}/>
+                  </Input>
+                </td>
+              </tr>
+            ]
+          }
         </table>
         <Result/>
       </div>
