@@ -23,7 +23,7 @@ class Index extends Component {
     
     return(
       <div>
-        <h1>GOP Tax Plan Impact Calculator</h1>
+        <h1>GOP Tax Plan Impact Calculator!</h1>
         <table>
           <tr>
             <td><label htmlFor='grossIncome'>Gross Income</label></td>

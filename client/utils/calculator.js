@@ -207,7 +207,7 @@ function calc_taxes(inputs) {
 
   if (relevant_rules.AMTRelevant ) {
     var amt_notional = inputs.GrossIncome - inputs.MortgageInterest - inputs.Charity
-    exemption = relevant_rules.AMTExemption
+    var exemption = relevant_rules.AMTExemption
     var amt_returns = calc_amt(amt_notional, relevant_rules.AMTExemption, relevant_rules.AMTPhaseOut, relevant_rules.AMTHighThreshold)
     outputs.AMTIncome = amt_returns.Income
     outputs.AMT = amt_returns.Tax
@@ -219,13 +219,13 @@ function calc_taxes(inputs) {
   
   if ( outputs.AMT > outputs.TotalTaxExAMT ){
     outputs.AMTActive = true
-    outputs.TotalTax = outputs.AMT
+    outputs.TotalTaxPreCredits = outputs.AMT
   }
   else {
     outputs.AMTActive = false
-    outputs.TotalTax = outputs.TotalTaxExAMT  
+    outputs.TotalTaxPreCredits = outputs.TotalTaxExAMT  
   }
-
+  outputs.TotalTax = outputs.TotalTaxPreCredits - outputs.ChildTaxCredit
   outputs.EffectiveTaxRateOnGross = outputs.TotalTax / outputs.GrossIncome;
   
   return outputs;
