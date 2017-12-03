@@ -1,0 +1,149 @@
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+
+import { updateInputField } from '../actions/input'
+import { Form, Container, Header, Segment, Button, Input, Label, Table } from 'semantic-ui-react'
+
+import Result from './Result'
+
+import NumberFormat from 'react-number-format'
+
+class Inputs extends Component {
+  _handleInputChange(field) {
+    return((e) => this.props.dispatch(updateInputField(field,e.target.value)))
+  }
+  
+  _updateField(field,value) {
+   this.props.dispatch(updateInputField(field,value)) 
+  }
+  
+  render() {
+    const { input, dispatch } = this.props
+    
+    return(
+      <Table>
+        <Table.Row>
+          <Table.Cell><label htmlFor='grossIncome'>Gross Income</label></Table.Cell>
+          <Table.Cell>
+            <Input 
+              type='text'
+              id='grossIncome'
+              labelPosition='left'
+            >
+              <Label
+                basic
+                content='$'
+              />
+              <NumberFormat value={input.grossIncome} thousandSeparator={true} onValueChange={({value}) => this._updateField('grossIncome',value)}/>
+            </Input>
+          </Table.Cell>
+        </Table.Row>
+        <Table.Row>
+          <Table.Cell><label htmlFor='filingStatus'>Filing Status</label></Table.Cell>
+          <Table.Cell>
+            <Button.Group>
+              <Button active={input.filingStatus == 'single'} onClick={(e) => dispatch(updateInputField('filingStatus','single'))}>Single</Button>
+              <Button.Or />
+              <Button active={input.filingStatus == 'married'} onClick={(e) => dispatch(updateInputField('filingStatus','married'))}>Married</Button>
+            </Button.Group>
+          </Table.Cell>
+        </Table.Row>   
+        <Table.Row>
+          <Table.Cell><label htmlFor='dependentChildrenCount'>Children</label></Table.Cell>
+          <Table.Cell><Input type='text' id='dependentChildrenCount' value={input.dependentChildrenCount} onChange={this._handleInputChange('dependentChildrenCount')}/></Table.Cell>
+        </Table.Row>
+        <Table.Row>
+          <Table.Cell><label htmlFor='personalExemptions'>Personal Exemptions</label></Table.Cell>
+          <Table.Cell><Input type='text' id='personalExemptions' value={input.personalExemptions} onChange={this._handleInputChange('personalExemptions')}/></Table.Cell>
+        </Table.Row>
+        <Table.Row>
+          <Table.Cell><label htmlFor='itemize'>Itemize?</label></Table.Cell>
+          <Table.Cell>
+            <Button.Group>
+              <Button active={input.itemize == false} onClick={(e) => dispatch(updateInputField('itemize',false))}>Standard</Button>
+              <Button.Or />
+              <Button active={input.itemize == true} onClick={(e) => dispatch(updateInputField('itemize',true))}>Itemized</Button>
+            </Button.Group>
+          </Table.Cell>
+        </Table.Row>                  
+        {
+          input.itemize && [
+            <Table.Row>
+              <Table.Cell><label htmlFor='mortgageInterest'>Mortgage Interest</label></Table.Cell>
+              <Table.Cell>
+                <Input 
+                  type='text'
+                  id='mortgageInterest'
+                  labelPosition='left'
+                >
+                  <Label
+                    basic
+                    content='$'
+                  />
+                  <NumberFormat value={input.mortgageInterest} thousandSeparator={true} onValueChange={({value}) => this._updateField('mortgageInterest',value)}/>
+                </Input>
+              </Table.Cell>
+            </Table.Row>,
+            <Table.Row>
+              <Table.Cell><label htmlFor='charitableDonations'>Charitable Donations</label></Table.Cell>
+              <Table.Cell>
+                <Input 
+                  type='text'
+                  id='charitableDonations'
+                  labelPosition='left'
+                >
+                  <Label
+                    basic
+                    content='$'
+                  />
+                  <NumberFormat value={input.charitableDonations} thousandSeparator={true} onValueChange={({value}) => this._updateField('charitableDonations',value)}/>
+                </Input>
+              </Table.Cell>
+            </Table.Row>,
+            <Table.Row>
+              <Table.Cell><label htmlFor='stateLocalPropertyTaxes'>State/Local Property Taxes</label></Table.Cell>
+              <Table.Cell>
+                <Input 
+                  type='text'
+                  id='stateLocalPropertyTaxes'
+                  labelPosition='left'
+                >
+                  <Label
+                    basic
+                    content='$'
+                  />
+                  <NumberFormat value={input.stateLocalPropertyTaxes} thousandSeparator={true} onValueChange={({value}) => this._updateField('stateLocalPropertyTaxes',value)}/>
+                </Input>
+              </Table.Cell>
+            </Table.Row>,
+            <Table.Row>
+              <Table.Cell><label htmlFor='stateLocalIncomeTaxes'>State/Local Income Taxes</label></Table.Cell>
+              <Table.Cell>
+                <Input 
+                  type='text'
+                  id='stateLocalIncomeTaxes'
+                  labelPosition='left'
+                >
+                  <Label
+                    basic
+                    content='$'
+                  />
+                  <NumberFormat value={input.stateLocalIncomeTaxes} thousandSeparator={true} onValueChange={({value}) => this._updateField('stateLocalIncomeTaxes',value)}/>
+                </Input>
+              </Table.Cell>
+            </Table.Row>
+          ]
+        }
+      </Table>
+    )
+  }
+}
+
+const mapStateToProps = (state) => {
+  return({
+    input: state.input,
+  })
+}
+
+// export default Index;
+export default connect(mapStateToProps)(Inputs)
