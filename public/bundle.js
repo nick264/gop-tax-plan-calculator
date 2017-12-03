@@ -61,7 +61,7 @@
 /******/ 	
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "c223e4943da918673ad5"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "d640044850afcb963c7c"; // eslint-disable-line no-unused-vars
 /******/ 	var hotRequestTimeout = 10000;
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule; // eslint-disable-line no-unused-vars
@@ -781,7 +781,12 @@ var _temp = function () {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.UPDATE_INPUT_FIELD = undefined;
 exports.updateInputField = updateInputField;
+exports.updateInputFieldAndRecalculate = updateInputFieldAndRecalculate;
+
+var _calculate = __webpack_require__("./client/actions/calculate.js");
+
 var UPDATE_INPUT_FIELD = exports.UPDATE_INPUT_FIELD = 'UPDATE_INPUT_FIELD';
 
 function updateInputField(field, value) {
@@ -789,6 +794,18 @@ function updateInputField(field, value) {
     type: UPDATE_INPUT_FIELD,
     field: field,
     value: value
+  };
+}
+
+function updateInputFieldAndRecalculate(field, value) {
+  return function (dispatch, getState) {
+    dispatch({
+      type: UPDATE_INPUT_FIELD,
+      field: field,
+      value: value
+    });
+
+    dispatch((0, _calculate.calculateResults)());
   };
 }
 ;
@@ -801,6 +818,8 @@ var _temp = function () {
   __REACT_HOT_LOADER__.register(UPDATE_INPUT_FIELD, 'UPDATE_INPUT_FIELD', '/Users/nicks/Development/tax-calculator/client/actions/input.js');
 
   __REACT_HOT_LOADER__.register(updateInputField, 'updateInputField', '/Users/nicks/Development/tax-calculator/client/actions/input.js');
+
+  __REACT_HOT_LOADER__.register(updateInputFieldAndRecalculate, 'updateInputFieldAndRecalculate', '/Users/nicks/Development/tax-calculator/client/actions/input.js');
 }();
 
 ;
@@ -860,7 +879,7 @@ var Index = function (_Component) {
       var _this2 = this;
 
       return function (e) {
-        return _this2.props.dispatch((0, _input.updateInputField)(field, e.target.value));
+        return _this2.props.dispatch((0, _input.updateInputFieldAndRecalculate)(field, e.target.value));
       };
     }
   }, {
@@ -922,7 +941,7 @@ var Index = function (_Component) {
                 _react2.default.createElement(
                   _semanticUiReact.Button,
                   { active: input.filingStatus == 'single', onClick: function onClick(e) {
-                      return dispatch((0, _input.updateInputField)('filingStatus', 'single'));
+                      return dispatch((0, _input.updateInputFieldAndRecalculate)('filingStatus', 'single'));
                     } },
                   'Single'
                 ),
@@ -930,7 +949,7 @@ var Index = function (_Component) {
                 _react2.default.createElement(
                   _semanticUiReact.Button,
                   { active: input.filingStatus == 'married', onClick: function onClick(e) {
-                      return dispatch((0, _input.updateInputField)('filingStatus', 'married'));
+                      return dispatch((0, _input.updateInputFieldAndRecalculate)('filingStatus', 'married'));
                     } },
                   'Married'
                 )
@@ -958,7 +977,7 @@ var Index = function (_Component) {
                 _react2.default.createElement(
                   _semanticUiReact.Button,
                   { active: input.itemize == false, onClick: function onClick(e) {
-                      return dispatch((0, _input.updateInputField)('itemize', false));
+                      return dispatch((0, _input.updateInputFieldAndRecalculate)('itemize', false));
                     } },
                   'Standard'
                 ),
@@ -966,7 +985,7 @@ var Index = function (_Component) {
                 _react2.default.createElement(
                   _semanticUiReact.Button,
                   { active: input.itemize == true, onClick: function onClick(e) {
-                      return dispatch((0, _input.updateInputField)('itemize', true));
+                      return dispatch((0, _input.updateInputFieldAndRecalculate)('itemize', true));
                     } },
                   'Itemized'
                 )
@@ -1043,6 +1062,42 @@ var Index = function (_Component) {
               'td',
               null,
               _react2.default.createElement(_semanticUiReact.Input, { type: 'text', id: 'stateLocalPropertyTaxes', value: input.stateLocalPropertyTaxes, onChange: this._handleInputChange('stateLocalPropertyTaxes') })
+            )
+          ),
+          _react2.default.createElement(
+            'tr',
+            null,
+            _react2.default.createElement(
+              'td',
+              null,
+              _react2.default.createElement(
+                'label',
+                { htmlFor: 'stateLocalIncomeTaxes' },
+                'State/Local Income Taxes'
+              )
+            ),
+            _react2.default.createElement(
+              'td',
+              null,
+              _react2.default.createElement(_semanticUiReact.Input, { type: 'text', id: 'stateLocalIncomeTaxes', value: input.stateLocalIncomeTaxes, onChange: this._handleInputChange('stateLocalIncomeTaxes') })
+            )
+          ),
+          _react2.default.createElement(
+            'tr',
+            null,
+            _react2.default.createElement(
+              'td',
+              null,
+              _react2.default.createElement(
+                'label',
+                { htmlFor: 'personalExemptions' },
+                'Personal Exemptions'
+              )
+            ),
+            _react2.default.createElement(
+              'td',
+              null,
+              _react2.default.createElement(_semanticUiReact.Input, { type: 'text', id: 'personalExemptions', value: input.personalExemptions, onChange: this._handleInputChange('personalExemptions') })
             )
           )
         ),
@@ -1389,7 +1444,9 @@ function configureStore() {
       dependentChildrenCount: 2,
       mortgageInterest: '0',
       charitableDonations: '0',
-      stateLocalPropertyTaxes: '0'
+      stateLocalPropertyTaxes: '0',
+      stateLocalIncomeTaxes: '0',
+      personalExemptions: '0'
     }
   };
 
@@ -1426,6 +1483,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.calculateFromInputs = calculateFromInputs;
+
 function calc_tax(amount, brackets) {
   var tax = 0;
   var last_bracket = 0;
@@ -1459,39 +1517,67 @@ var rules = {
     "Single": {
       "Brackets": current_single,
       "StandardDeduction": 6350,
-      "PersonalExemption": 4050
+      "PersonalExemption": 4050,
+      "PersonalExemptionPhaseOut": 266700,
+      "ChildTaxCredit": 1000,
+      "ChildTaxCreditPhaseOut": 75000
+      // "AMTDeduction"
     },
     "Married": {
       "Brackets": current_married,
       "StandardDeduction": 12700,
-      "PersonalExemption": 8100
+      "PersonalExemption": 4050,
+      "PersonalExemptionPhaseOut": 320000,
+      "ChildTaxCredit": 1000,
+      "ChildTaxCreditPhaseOut": 115000
+
     } },
   "House": {
     "Single": {
       "Brackets": house_single,
       "StandardDeduction": 12200,
-      "PersonalExemption": 0
+      "PersonalExemption": 0,
+      "PersonalExemptionPhaseOut": 320000,
+      "ChildTaxCredit": 1600,
+      "ChildTaxCreditPhaseOut": 115000 //https://www.cbpp.org/research/federal-tax/house-tax-bills-child-tax-credit-increase-excludes-thousands-of-children-in-low
     },
     "Married": {
       "Brackets": house_married,
       "StandardDeduction": 24400,
-      "PersonalExemption": 0
+      "PersonalExemption": 0,
+      "PersonalExemptionPhaseOut": 320000,
+      "ChildTaxCredit": 1600,
+      "ChildTaxCreditPhaseOut": 230000
     } },
   "Senate": {
     "Single": {
       "Brackets": senate_single,
       "StandardDeduction": 12000,
-      "PersonalExemption": 0
+      "PersonalExemption": 0,
+      "PersonalExemptionPhaseOut": 320000, //unused
+      "ChildTaxCredit": 2000,
+      "ChildTaxCreditPhaseOut": 500000 //https://www.cbpp.org/research/federal-tax/senate-tax-bills-child-tax-credit-increase-provides-only-token-help-to-millions
     },
     "Married": {
       "Brackets": senate_married,
       "StandardDeduction": 24000,
-      "PersonalExemption": 0
+      "PersonalExemption": 0,
+      "PersonalExemptionPhaseOut": 320000,
+      "ChildTaxCredit": 2000,
+      "ChildTaxCreditPhaseOut": 500000
     } }
 
 };
 
+function reduce(total_amount, income, threshold, derate_step, derate, dollars_not_percent) {
+  var diff = income - threshold;
+  if (diff <= 0) return total_amount;
+  var steps = Math.floor(diff / derate_step);
+  if (dollars_not_percent) return Math.max(0, total_amount - derate * steps);else return Math.max(0, total_amount * (1 - derate / 100 * steps));
+}
+
 function calc_taxes(inputs) {
+  console.log('calc taxes inputs: ', inputs);
   var amount = inputs.Amount;
   var outputs = {};
   var sum_deductions = 0;
@@ -1500,39 +1586,49 @@ function calc_taxes(inputs) {
     outputs.MortgageInterest = inputs.MortgageInterest;
     outputs.Charity = inputs.Charity;
     if (inputs.Plan == 'Senate') {
-      outputs.SALT = 0;
+      outputs.SALTProperty = 0;
+      outputs.SALTIncome = 0;
     } else if (inputs.Plan == 'House') {
-      outputs.SALT = Math.min(inputs.SALT, 10000);
+      outputs.SALTProperty = Math.min(inputs.SALTProperty, 10000);
+      outputs.SALTIncome = 0;
     } else if (inputs.Plan == 'Current') {
-      outputs.SALT = inputs.SALT;
+      outputs.SALTProperty = inputs.SALTProperty;
+      outputs.SALTIncome = inputs.SALTIncome;
     }
-    outputs.TotalDeductions = outputs.SALT + outputs.Charity + outputs.MortgageInterest;
+    outputs.TotalDeductions = outputs.SALTIncome + outputs.SALTProperty + outputs.Charity + outputs.MortgageInterest;
   } else {
     outputs.TotalDeductions = 12000;
   }
+
+  outputs.PersonalExemptions = inputs.PersonalExemptions;
+  var pe = inputs.PersonalExemptions * relevant_rules.PersonalExemption;
+  outputs.PersonalExemptionAmount = reduce(pe, inputs.GrossIncome, relevant_rules.PersonalExemptionPhaseOut, 2500, 2, false);
+  outputs.TotalDeductionsAndExemptions = outputs.TotalDeductions + outputs.PersonalExemptionAmount;
+
   outputs['GrossIncome'] = inputs.GrossIncome;
-  outputs.TaxableIncome = outputs.GrossIncome - outputs.TotalDeductions;
+  outputs.TaxableIncome = outputs.GrossIncome - outputs.TotalDeductionsAndExemptions;
   outputs.TotalTax = calc_tax(outputs.TaxableIncome, relevant_rules.Brackets);
   outputs.EffectiveTaxRate = outputs.TotalTax / outputs.TaxableIncome;
+  var ctc = inputs.DependentChildren * relevant_rules.ChildTaxCredit;
+  outputs.ChildTaxCredit = reduce(ctc, inputs.GrossIncome, relevant_rules.ChildTaxCreditPhaseOut, 1000, 50 * inputs.DependentChildren, true);
+
+  outputs.Child;
 
   return outputs;
 }
 
-// //var res = calc_tax(4184000, fed_single);
+//var res = calc_tax(4184000, fed_single);
 // var inputs = {}
-// inputs.GrossIncome = 551000
+// inputs.GrossIncome = 200000
 // inputs.FilingStatus = 'Single'
 // inputs.Itemize = true
 // inputs.DependentChildren = 2
+// inputs.PersonalExemptions = 4
 // inputs.MortgageInterest = 30000
 // inputs.Charity = 5000
-// inputs.SALT = 50000
-// inputs.Plan = 'Senate'
-
-
-// var res = calc_taxes(inputs);
-
-// console.log(res)
+// inputs.SALTProperty = 25000
+// inputs.SALTIncome = inputs.GrossIncome * .06
+// inputs.Plan = 'Current'
 
 function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
@@ -1541,21 +1637,25 @@ function capitalizeFirstLetter(string) {
 function calculateFromInputs(_ref) {
   var grossIncome = _ref.grossIncome,
       filingStatus = _ref.filingStatus,
-      itemized = _ref.itemized,
+      itemize = _ref.itemize,
       dependentChildrenCount = _ref.dependentChildrenCount,
       mortgageInterest = _ref.mortgageInterest,
       charitableDonations = _ref.charitableDonations,
-      stateLocalPropertyTaxes = _ref.stateLocalPropertyTaxes;
+      stateLocalPropertyTaxes = _ref.stateLocalPropertyTaxes,
+      stateLocalIncomeTaxes = _ref.stateLocalIncomeTaxes,
+      personalExemptions = _ref.personalExemptions;
 
   return calc_taxes({
     GrossIncome: parseInt(grossIncome),
     FilingStatus: capitalizeFirstLetter(filingStatus),
-    Itemize: itemized,
+    Itemize: itemize,
     DependentChildren: parseInt(dependentChildrenCount),
+    PersonalExemptions: parseInt(personalExemptions),
     MortgageInterest: parseInt(mortgageInterest),
     Charity: parseInt(charitableDonations),
-    SALT: parseInt(stateLocalPropertyTaxes),
-    Plan: 'Senate'
+    SALTProperty: parseInt(stateLocalPropertyTaxes),
+    SALTIncome: parseInt(stateLocalIncomeTaxes),
+    Plan: 'House'
   });
 }
 ;
@@ -1580,6 +1680,8 @@ var _temp = function () {
   __REACT_HOT_LOADER__.register(senate_married, "senate_married", "/Users/nicks/Development/tax-calculator/client/utils/calculator.js");
 
   __REACT_HOT_LOADER__.register(rules, "rules", "/Users/nicks/Development/tax-calculator/client/utils/calculator.js");
+
+  __REACT_HOT_LOADER__.register(reduce, "reduce", "/Users/nicks/Development/tax-calculator/client/utils/calculator.js");
 
   __REACT_HOT_LOADER__.register(calc_taxes, "calc_taxes", "/Users/nicks/Development/tax-calculator/client/utils/calculator.js");
 

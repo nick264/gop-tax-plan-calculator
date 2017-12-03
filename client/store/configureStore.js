@@ -14,7 +14,9 @@ export default function configureStore(preloadedState = {}) {
       dependentChildrenCount: 2,
       mortgageInterest: '0',
       charitableDonations: '0',
-      stateLocalPropertyTaxes: '0'
+      stateLocalPropertyTaxes: '0',
+      stateLocalIncomeTaxes: '0',
+      personalExemptions: '0'
     }  
   }
   

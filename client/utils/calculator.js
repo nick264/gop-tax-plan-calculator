@@ -1,3 +1,4 @@
+
 function calc_tax(amount, brackets) {
   var tax = 0
     var last_bracket = 0
@@ -13,6 +14,9 @@ function calc_tax(amount, brackets) {
   }
 
   return tax;
+  
+    
+
 }
 
 var current_single = [
@@ -74,40 +78,72 @@ var rules = {
   "Single":{
   "Brackets":current_single,
   "StandardDeduction":6350,
-  "PersonalExemption":4050
+  "PersonalExemption":4050,
+  "PersonalExemptionPhaseOut":266700,
+  "ChildTaxCredit":1000,
+  "ChildTaxCreditPhaseOut":75000,
+  // "AMTDeduction"
   },
   "Married":{
   "Brackets":current_married,
   "StandardDeduction":12700,
-  "PersonalExemption":8100
+  "PersonalExemption":4050,
+  "PersonalExemptionPhaseOut":320000,
+  "ChildTaxCredit":1000,
+  "ChildTaxCreditPhaseOut":115000,
+
   }},
  "House": {
   "Single":{
   "Brackets":house_single,
   "StandardDeduction":12200,
-  "PersonalExemption":0
+  "PersonalExemption":0,
+  "PersonalExemptionPhaseOut":320000,
+  "ChildTaxCredit":1600,
+  "ChildTaxCreditPhaseOut":115000, //https://www.cbpp.org/research/federal-tax/house-tax-bills-child-tax-credit-increase-excludes-thousands-of-children-in-low
   },
   "Married":{
   "Brackets":house_married,
   "StandardDeduction":24400,
-  "PersonalExemption":0
+  "PersonalExemption":0,
+  "PersonalExemptionPhaseOut":320000,
+  "ChildTaxCredit":1600,
+  "ChildTaxCreditPhaseOut":230000,
   }},
  "Senate": {
   "Single":{
   "Brackets":senate_single,
   "StandardDeduction":12000,
-  "PersonalExemption":0
+  "PersonalExemption":0,
+  "PersonalExemptionPhaseOut":320000, //unused
+  "ChildTaxCredit":2000,
+  "ChildTaxCreditPhaseOut":500000, //https://www.cbpp.org/research/federal-tax/senate-tax-bills-child-tax-credit-increase-provides-only-token-help-to-millions
   },
   "Married":{
   "Brackets":senate_married,
   "StandardDeduction":24000,
-  "PersonalExemption":0
+  "PersonalExemption":0,
+  "PersonalExemptionPhaseOut":320000,
+  "ChildTaxCredit":2000,
+  "ChildTaxCreditPhaseOut":500000,
   }},
   
 }
 
+function reduce(total_amount, income, threshold, derate_step, derate, dollars_not_percent) {
+  var diff =income-threshold
+  if (diff <= 0)
+    return total_amount
+  var steps = Math.floor(diff / derate_step)
+  if (dollars_not_percent)
+    return Math.max(0, total_amount - derate * steps)
+  else
+    return Math.max(0, total_amount * (1 - derate/100 * steps))
+
+}
 
 function calc_taxes(inputs) {
+  console.log('calc taxes inputs: ', inputs)
   var amount = inputs.Amount;
   var outputs={};
   var sum_deductions=0
@@ -116,56 +152,67 @@ function calc_taxes(inputs) {
     outputs.MortgageInterest = inputs.MortgageInterest
     outputs.Charity = inputs.Charity
     if (inputs.Plan == 'Senate') {
-      outputs.SALT = 0
+      outputs.SALTProperty = 0
+      outputs.SALTIncome = 0
     } else if (inputs.Plan == 'House') {
-      outputs.SALT = Math.min(inputs.SALT, 10000)
+      outputs.SALTProperty = Math.min(inputs.SALTProperty, 10000)
+      outputs.SALTIncome = 0
     } else if (inputs.Plan == 'Current') {
-      outputs.SALT = inputs.SALT
+      outputs.SALTProperty = inputs.SALTProperty
+      outputs.SALTIncome = inputs.SALTIncome
     }
-    outputs.TotalDeductions = outputs.SALT+outputs.Charity+outputs.MortgageInterest
+    outputs.TotalDeductions = outputs.SALTIncome+outputs.SALTProperty+outputs.Charity+outputs.MortgageInterest
 
   }
   else {
     outputs.TotalDeductions = 12000 
-  
   }
+  
+  outputs.PersonalExemptions = inputs.PersonalExemptions
+  var pe =  inputs.PersonalExemptions * relevant_rules.PersonalExemption
+  outputs.PersonalExemptionAmount = reduce(pe, inputs.GrossIncome, relevant_rules.PersonalExemptionPhaseOut, 2500, 2, false)
+  outputs.TotalDeductionsAndExemptions = outputs.TotalDeductions+outputs.PersonalExemptionAmount
+
   outputs['GrossIncome']=inputs.GrossIncome;
-  outputs.TaxableIncome = outputs.GrossIncome - outputs.TotalDeductions;
+  outputs.TaxableIncome = outputs.GrossIncome - outputs.TotalDeductionsAndExemptions;
   outputs.TotalTax = calc_tax(outputs.TaxableIncome, relevant_rules.Brackets);
   outputs.EffectiveTaxRate = outputs.TotalTax / outputs.TaxableIncome;
-  
+  var ctc =  inputs.DependentChildren * relevant_rules.ChildTaxCredit
+  outputs.ChildTaxCredit = reduce(ctc, inputs.GrossIncome, relevant_rules.ChildTaxCreditPhaseOut, 1000, 50 * inputs.DependentChildren, true)
+
+  outputs.Child
+
   return outputs;
 }
 
-// //var res = calc_tax(4184000, fed_single);
+//var res = calc_tax(4184000, fed_single);
 // var inputs = {}
-// inputs.GrossIncome = 551000
+// inputs.GrossIncome = 200000
 // inputs.FilingStatus = 'Single'
 // inputs.Itemize = true
 // inputs.DependentChildren = 2
+// inputs.PersonalExemptions = 4
 // inputs.MortgageInterest = 30000
 // inputs.Charity = 5000
-// inputs.SALT = 50000
-// inputs.Plan = 'Senate'
-
-
-// var res = calc_taxes(inputs);
-
-// console.log(res)
+// inputs.SALTProperty = 25000
+// inputs.SALTIncome = inputs.GrossIncome * .06
+// inputs.Plan = 'Current'
 
 function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
 }
 
-export function calculateFromInputs({grossIncome, filingStatus, itemized, dependentChildrenCount, mortgageInterest, charitableDonations, stateLocalPropertyTaxes }) {
+export function calculateFromInputs({grossIncome, filingStatus, itemize, dependentChildrenCount, mortgageInterest, charitableDonations, stateLocalPropertyTaxes, stateLocalIncomeTaxes, personalExemptions }) {
   return calc_taxes({
     GrossIncome: parseInt(grossIncome),
     FilingStatus: capitalizeFirstLetter(filingStatus),
-    Itemize: itemized,
+    Itemize: itemize,
     DependentChildren: parseInt(dependentChildrenCount),
+    PersonalExemptions: parseInt(personalExemptions),
     MortgageInterest: parseInt(mortgageInterest),
     Charity: parseInt(charitableDonations),
-    SALT: parseInt(stateLocalPropertyTaxes),
-    Plan: 'Senate'
+    SALTProperty: parseInt(stateLocalPropertyTaxes),
+    SALTIncome: parseInt(stateLocalIncomeTaxes),
+    Plan: 'House'
   })
 }

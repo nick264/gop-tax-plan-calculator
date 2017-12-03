@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 
-import { updateInputField } from '../actions/input'
+import { updateInputField, updateInputFieldAndRecalculate } from '../actions/input'
 import { calculateResults } from '../actions/calculate' 
 import { Button, Input } from 'semantic-ui-react'
 
@@ -15,7 +15,7 @@ class Index extends Component {
   }
   
   _handleInputChange(field) {
-    return((e) => this.props.dispatch(updateInputField(field,e.target.value)))
+    return((e) => this.props.dispatch(updateInputFieldAndRecalculate(field,e.target.value)))
   }
   
   render() {
@@ -33,9 +33,9 @@ class Index extends Component {
             <td><label htmlFor='filingStatus'>Filing Status</label></td>
             <td>
               <Button.Group>
-                <Button active={input.filingStatus == 'single'} onClick={(e) => dispatch(updateInputField('filingStatus','single'))}>Single</Button>
+                <Button active={input.filingStatus == 'single'} onClick={(e) => dispatch(updateInputFieldAndRecalculate('filingStatus','single'))}>Single</Button>
                 <Button.Or />
-                <Button active={input.filingStatus == 'married'} onClick={(e) => dispatch(updateInputField('filingStatus','married'))}>Married</Button>
+                <Button active={input.filingStatus == 'married'} onClick={(e) => dispatch(updateInputFieldAndRecalculate('filingStatus','married'))}>Married</Button>
               </Button.Group>
             </td>
           </tr>        
@@ -43,9 +43,9 @@ class Index extends Component {
             <td><label htmlFor='itemize'>Itemize?</label></td>
             <td>
               <Button.Group>
-                <Button active={input.itemize == false} onClick={(e) => dispatch(updateInputField('itemize',false))}>Standard</Button>
+                <Button active={input.itemize == false} onClick={(e) => dispatch(updateInputFieldAndRecalculate('itemize',false))}>Standard</Button>
                 <Button.Or />
-                <Button active={input.itemize == true} onClick={(e) => dispatch(updateInputField('itemize',true))}>Itemized</Button>
+                <Button active={input.itemize == true} onClick={(e) => dispatch(updateInputFieldAndRecalculate('itemize',true))}>Itemized</Button>
               </Button.Group>
             </td>
           </tr>        
@@ -64,6 +64,14 @@ class Index extends Component {
           <tr>
             <td><label htmlFor='stateLocalPropertyTaxes'>State/Local Property Taxes</label></td>
             <td><Input type='text' id='stateLocalPropertyTaxes' value={input.stateLocalPropertyTaxes} onChange={this._handleInputChange('stateLocalPropertyTaxes')}/></td>
+          </tr>
+          <tr>
+            <td><label htmlFor='stateLocalIncomeTaxes'>State/Local Income Taxes</label></td>
+            <td><Input type='text' id='stateLocalIncomeTaxes' value={input.stateLocalIncomeTaxes} onChange={this._handleInputChange('stateLocalIncomeTaxes')}/></td>
+          </tr>
+          <tr>
+            <td><label htmlFor='personalExemptions'>Personal Exemptions</label></td>
+            <td><Input type='text' id='personalExemptions' value={input.personalExemptions} onChange={this._handleInputChange('personalExemptions')}/></td>
           </tr>
 
         </table>
