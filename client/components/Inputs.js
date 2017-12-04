@@ -21,7 +21,7 @@ class Inputs extends Component {
     const { input, dispatch } = this.props
     
     return(
-      <Table>
+      <Table color='blue'>
         <Table.Row>
           <Table.Cell width={9}><label htmlFor='grossIncome'>Gross Income</label></Table.Cell>
           <Table.Cell>

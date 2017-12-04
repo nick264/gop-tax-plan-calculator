@@ -19,6 +19,24 @@ export default function configureStore(preloadedState = {}) {
       personalExemptions: 0
     }  
   }
+
+  // preloadedState = {
+  //   input: {
+  //     grossIncome: 60000,
+  //     filingStatus: 'single',
+  //     itemize: false,
+  //     dependentChildrenCount: 0,
+  //     mortgageInterest: 0,
+  //     charitableDonations: 0,
+  //     stateLocalPropertyTaxes: 0,
+  //     stateLocalIncomeTaxes: 0,
+  //     personalExemptions: 0
+  //   },
+  //   ui: {
+  //     resultsVisible: true,
+  //     detailsVisible: true
+  //   }
+  // }
   
   if (process.env.NODE_ENV !== 'production') {
     return createStore(
