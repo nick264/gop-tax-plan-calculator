@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js",
     "build": "webpack --progress",
-    "watch": "npm-watch"
+    "watch": "npm-watch",
+    "heroku-postbuild": "webpack -p --config ./webpack.prod.config.js --progress"
   },
   "watch": {
     "build": "client/"
