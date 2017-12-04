@@ -23,12 +23,13 @@ class Inputs extends Component {
     return(
       <Table>
         <Table.Row>
-          <Table.Cell><label htmlFor='grossIncome'>Gross Income</label></Table.Cell>
+          <Table.Cell width={9}><label htmlFor='grossIncome'>Gross Income</label></Table.Cell>
           <Table.Cell>
             <Input 
               type='text'
               id='grossIncome'
               labelPosition='left'
+              fluid
             >
               <Label
                 basic
@@ -41,7 +42,7 @@ class Inputs extends Component {
         <Table.Row>
           <Table.Cell><label htmlFor='filingStatus'>Filing Status</label></Table.Cell>
           <Table.Cell>
-            <Button.Group>
+            <Button.Group fluid>
               <Button active={input.filingStatus == 'single'} onClick={(e) => dispatch(updateInputField('filingStatus','single'))}>Single</Button>
               <Button.Or />
               <Button active={input.filingStatus == 'married'} onClick={(e) => dispatch(updateInputField('filingStatus','married'))}>Married</Button>
@@ -50,16 +51,16 @@ class Inputs extends Component {
         </Table.Row>   
         <Table.Row>
           <Table.Cell><label htmlFor='dependentChildrenCount'>Children</label></Table.Cell>
-          <Table.Cell><Input type='text' id='dependentChildrenCount' value={input.dependentChildrenCount} onChange={this._handleInputChange('dependentChildrenCount')}/></Table.Cell>
+          <Table.Cell><Input fluid type='text' id='dependentChildrenCount' value={input.dependentChildrenCount} onChange={this._handleInputChange('dependentChildrenCount')}/></Table.Cell>
         </Table.Row>
         <Table.Row>
           <Table.Cell><label htmlFor='personalExemptions'>Personal Exemptions</label></Table.Cell>
-          <Table.Cell><Input type='text' id='personalExemptions' value={input.personalExemptions} onChange={this._handleInputChange('personalExemptions')}/></Table.Cell>
+          <Table.Cell><Input fluid type='text' id='personalExemptions' value={input.personalExemptions} onChange={this._handleInputChange('personalExemptions')}/></Table.Cell>
         </Table.Row>
         <Table.Row>
           <Table.Cell><label htmlFor='itemize'>Itemize?</label></Table.Cell>
           <Table.Cell>
-            <Button.Group>
+            <Button.Group fluid>
               <Button active={input.itemize == false} onClick={(e) => dispatch(updateInputField('itemize',false))}>Standard</Button>
               <Button.Or />
               <Button active={input.itemize == true} onClick={(e) => dispatch(updateInputField('itemize',true))}>Itemized</Button>
@@ -75,6 +76,7 @@ class Inputs extends Component {
                   type='text'
                   id='mortgageInterest'
                   labelPosition='left'
+                  fluid
                 >
                   <Label
                     basic
@@ -91,6 +93,7 @@ class Inputs extends Component {
                   type='text'
                   id='charitableDonations'
                   labelPosition='left'
+                  fluid
                 >
                   <Label
                     basic
@@ -107,6 +110,7 @@ class Inputs extends Component {
                   type='text'
                   id='stateLocalPropertyTaxes'
                   labelPosition='left'
+                  fluid
                 >
                   <Label
                     basic
@@ -123,6 +127,7 @@ class Inputs extends Component {
                   type='text'
                   id='stateLocalIncomeTaxes'
                   labelPosition='left'
+                  fluid
                 >
                   <Label
                     basic
