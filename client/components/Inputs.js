@@ -35,7 +35,7 @@ class Inputs extends Component {
                 basic
                 content='$'
               />
-              <NumberFormat value={input.grossIncome} thousandSeparator={true} onValueChange={({value}) => this._updateField('grossIncome',value)}/>
+              <NumberFormat value={input.grossIncome || ''} thousandSeparator={true} onValueChange={({value}) => this._updateField('grossIncome',value)}/>
             </Input>
           </Table.Cell>
         </Table.Row>
