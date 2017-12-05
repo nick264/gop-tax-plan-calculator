@@ -51,7 +51,6 @@ const getData = ({input,field}) => {
     
     for(const y of [resultCurrent[field],resultHouse[field],resultSenate[field]]) {
       if(isNaN(y)) { continue }
-      console.log(y)
       maxY = Math.max(maxY,y)
     }
   }
@@ -83,14 +82,18 @@ class ChartIncomeSensitivity extends Component {
 
     this.line = container
       .append("line")
-      .attr("class", "y")
+      .attr("class", "x")
       .style("stroke", "blue")
       .style("stroke-dasharray", "3,3")
       .style("opacity", 0.5)
       .attr({
-        x1: x(0), x2: x(1.0),
-        y1: y(this.data.currentLevel/maxY), y2: y(this.data.currentLevel/maxY)
-      })      
+        x1: x(this.props.input.grossIncome/maxX), x2: x(this.props.input.grossIncome/maxX),
+        y1: y(0), y2: y(1.0)
+      })
+      // .attr({
+      //   x1: x(0), x2: x(1.0),
+      //   y1: y(this.data.currentLevel/maxY), y2: y(this.data.currentLevel/maxY)
+      // })      
   }
   
   componentDidUpdate() {
@@ -142,7 +145,6 @@ class ChartIncomeSensitivity extends Component {
           xDomain={this.xDomain}
           yAxis={yAxis}
           yDomain={this.yDomain}
-          configure={(chart) => { console.log('chart = ', chart) }}
           ref='nvd3-chart'
         />
       </div>
