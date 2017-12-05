@@ -169,7 +169,32 @@ const Result = ({input, ui, dispatch}) => {
               <Table.Cell><FormatAmount value={resultsHouse.EffectiveTaxRate} pctOrAbs={true}/></Table.Cell>
               <Table.Cell><FormatAmount value={resultsSenate.EffectiveTaxRate} pctOrAbs={true}/></Table.Cell>
             </Table.Row>
-          </Table.Body>,
+          </Table.Body>
+        ]
+      }
+      {
+        ui.detailsVisible && ( resultsCurrent.AMTActive || resultsHouse.AMTActive || resultsSenate.AMTActive ) &&
+          [
+            <Table.Header>                    
+              <Table.Row>
+                <Table.HeaderCell>Total Tax Before AMT/Credits</Table.HeaderCell>
+                <Table.HeaderCell><FormatAmount value={resultsCurrent.TotalTaxExAMT}/></Table.HeaderCell>
+                <Table.HeaderCell><FormatAmount value={resultsHouse.TotalTaxExAMT}/></Table.HeaderCell>
+                <Table.HeaderCell><FormatAmount value={resultsSenate.TotalTaxExAMT}/></Table.HeaderCell>
+              </Table.Row>
+            </Table.Header>,
+            <Table.Body>
+              <Table.Row>
+                <Table.Cell>AMT Triggered</Table.Cell>
+                <Table.Cell>{resultsCurrent.AMTActive ? 'YES' : ''}</Table.Cell>
+                <Table.Cell>{resultsHouse.AMTActive ? 'YES' : ''}</Table.Cell>
+                <Table.Cell>{resultsSenate.AMTActive ? 'YES' : ''}</Table.Cell>
+              </Table.Row>
+            </Table.Body>
+          ]
+      }
+      {
+        ui.detailsVisible && [
           <Table.Header>          
             <Table.Row>
               <Table.HeaderCell>Total Tax Before Credits</Table.HeaderCell>
@@ -186,36 +211,15 @@ const Result = ({input, ui, dispatch}) => {
               <Table.Cell><FormatAmount value={resultsSenate.ChildTaxCredit}/></Table.Cell>
             </Table.Row>
           </Table.Body>,
-          <Table.Header>                    
+          <Table.Header>
             <Table.Row>
               <Table.HeaderCell>Total Tax</Table.HeaderCell>
-              <Table.HeaderCell><FormatAmount value={resultsCurrent.TotalTaxExAMT}/></Table.HeaderCell>
-              <Table.HeaderCell><FormatAmount value={resultsHouse.TotalTaxExAMT}/></Table.HeaderCell>
-              <Table.HeaderCell><FormatAmount value={resultsSenate.TotalTaxExAMT}/></Table.HeaderCell>
+              <Table.HeaderCell><FormatAmount value={resultsCurrent.TotalTax}/></Table.HeaderCell>
+              <Table.HeaderCell><FormatAmount value={resultsHouse.TotalTax}/></Table.HeaderCell>
+              <Table.HeaderCell><FormatAmount value={resultsSenate.TotalTax}/></Table.HeaderCell>
             </Table.Row>
           </Table.Header>
         ]
-      }
-      {
-        ui.detailsVisible && ( resultsCurrent.AMTActive || resultsHouse.AMTActive || resultsSenate.AMTActive ) &&
-          [
-            <Table.Body>
-              <Table.Row>
-                <Table.Cell>AMT Triggered</Table.Cell>
-                <Table.Cell>{resultsCurrent.AMTActive ? 'YES' : ''}</Table.Cell>
-                <Table.Cell>{resultsHouse.AMTActive ? 'YES' : ''}</Table.Cell>
-                <Table.Cell>{resultsSenate.AMTActive ? 'YES' : ''}</Table.Cell>
-              </Table.Row>
-            </Table.Body>,
-            <Table.Header>
-              <Table.Row>
-                <Table.HeaderCell>Total Tax (after AMT)</Table.HeaderCell>
-                <Table.HeaderCell><FormatAmount value={resultsCurrent.TotalTax}/></Table.HeaderCell>
-                <Table.HeaderCell><FormatAmount value={resultsHouse.TotalTax}/></Table.HeaderCell>
-                <Table.HeaderCell><FormatAmount value={resultsSenate.TotalTax}/></Table.HeaderCell>
-              </Table.Row>
-            </Table.Header>
-          ]
       }
       {
         !ui.detailsVisible &&

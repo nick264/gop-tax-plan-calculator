@@ -9,14 +9,14 @@ export default function configureStore(preloadedState = {}) {
   preloadedState = {
     input: {
       grossIncome: null,
-      filingStatus: null,
-      itemize: null,
+      filingStatus: 'single',
+      itemize: false,
       dependentChildrenCount: 0,
       mortgageInterest: 0,
       charitableDonations: 0,
       stateLocalPropertyTaxes: 0,
       stateLocalIncomeTaxes: 0,
-      personalExemptions: 0
+      personalExemptions: 1
     }  
   }
 
