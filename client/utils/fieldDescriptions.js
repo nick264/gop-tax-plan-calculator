@@ -6,10 +6,11 @@ const DESCRIPTIONS = {
     "DependentChildren": "The number of chidren you claim as dependents, Age 0-16",
     "PersonalExemptions": "All dependents inlcuding YOURSELF, spouse, seniors and dependent children of all ages. INCLUDE dependent children that were counted above",
     "MortgageInterest": "The amount of interest you pay on your mortgage ",
-    "Charity": "The amount of tax deductible donations to charity",
-    "SALTProperty": "State and local property taxes",
+    "Charity": "The amount of tax deductible donations to charity.",
+    "SALTProperty": "State and local property taxes.",
+    "MedicalExpenses": "Total out of pocket medical expenses. We'll work out whether they are deductible. These are only deductible if they exceed 10% of your gross income, and are never deductible under the House plan.",
     "SALTIncome": "State and Local income taxes paid. For now enter this number manually. We are looking at calculating state tax automatically.",
-    "Plan": "Not entered by user"
+    "Plan": "Not entered by user."
   },
   "output": {
     "SALTProperty": "The amount of state and local property taxes that are allowable deductions for a given tax plan",
