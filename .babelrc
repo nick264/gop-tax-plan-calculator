@@ -1,3 +1,6 @@
 {
-  "plugins": ["react-hot-loader/babel"]
+ "presets": [
+    "es2015"
+ ],
+ "plugins": ["react-hot-loader/babel"]
 }
