@@ -4,25 +4,30 @@ import _ from 'lodash'
 
 import FormatAmount from './FormatAmount'
 import Details from './Details'
-import { Table, Button, Icon } from 'semantic-ui-react'
+import { Table, Button, Icon, Header } from 'semantic-ui-react'
 
 import { calculateFromInputs } from '../utils/calculator'
 
 import { showDetails } from '../actions/ui'
+
+
+const COLOR_GOOD = '#1ebc30'
+const COLOR_BAD = '#db2828'
+const COLOR_NEUTRAL = '#aaa'
 
 const FormatImpact = ({value, pctOrAbs}) => {  
   let color = null
   let prefix = ''
   
   if(value < 0) {
-    color = '#1ebc30'
+    color = COLOR_GOOD
   }
   else if(value > 0) {
-    color = '#db2828'
+    color = COLOR_BAD
     prefix = '+'
   }
   else {
-    color = '#aaa'
+    color = COLOR_NEUTRAL
   }
   
   return(
@@ -30,6 +35,29 @@ const FormatImpact = ({value, pctOrAbs}) => {
       (<FormatAmount value={value} pctOrAbs={pctOrAbs} prefix={prefix}/>)
     </strong>
   )  
+}
+
+const ImpactSummary = ({house,senate}) => {
+  const houseDir = Math.sign(house)
+  const senateDir = Math.sign(senate)
+  
+  const dirToWords = {
+    '-1': <span><span style={{color: COLOR_GOOD}}>save</span> money under</span>,
+    '0': <span>be <span style={{color: COLOR_NEUTRAL}}>unaffected</span> by</span>,
+    '1': <span><span style={{color: COLOR_BAD}}>lose</span> money under</span>
+  }
+  
+  if(houseDir == senateDir) {
+    return(
+      <span>You would {dirToWords[houseDir]} both plans</span>
+    )
+  }
+  else {
+    return(
+      <span>You would {dirToWords[houseDir]} under the House plan and {dirToWords[senateDir]} under the Senate plan.</span>
+    )
+  }
+  
 }
 
 const Result = ({input, ui, dispatch}) => {
@@ -46,6 +74,13 @@ const Result = ({input, ui, dispatch}) => {
   return(
     <Table color='green'>
       <Table.Header>
+        <Table.Row>
+          <Table.HeaderCell colspan='4'>
+            <Header textAlign='center'>
+              <ImpactSummary house={houseTaxImpact} senate={senateTaxImpact}/>
+            </Header>
+          </Table.HeaderCell>
+        </Table.Row>
         <Table.Row>
           <Table.HeaderCell />
           <Table.HeaderCell>Current</Table.HeaderCell>
@@ -100,9 +135,8 @@ const Result = ({input, ui, dispatch}) => {
           />
         :
           <Table.Footer fullWidth>
-            <Table.Row>
-              <Table.HeaderCell />
-              <Table.HeaderCell colSpan='4'>
+            <Table.Row>              
+              <Table.HeaderCell colspan='4'>
                 <Button floated='right' icon labelPosition='left' size='tiny' onClick={() => dispatch(showDetails())}>
                   <Icon name='plus' /> Details
                 </Button>
