@@ -19,10 +19,11 @@ class Index extends Component {
     super(props)
   }
   
+  
   _inputsComplete() {
     // kind of hacky - just calculate results to see if they compute
     const { input } = this.props
-    return input.itemize != null && input.filingStatus && calculateFromInputs(input,'Current').TotalTax
+    return input.itemize != null && input.filingStatus && !isNaN(calculateFromInputs(input,'Current').TotalTax)
   }
   
   render() {

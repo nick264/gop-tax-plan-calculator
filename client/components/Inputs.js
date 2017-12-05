@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import { updateInputField } from '../actions/input'
 import { Form, Container, Header, Segment, Button, Input, Label, Table } from 'semantic-ui-react'
 
-import Result from './Result'
+import Tooltip from './Tooltip'
 
 import NumberFormat from 'react-number-format'
 
@@ -23,7 +23,10 @@ class Inputs extends Component {
     return(
       <Table color='blue'>
         <Table.Row>
-          <Table.Cell width={9}><label htmlFor='grossIncome'>Gross Income</label></Table.Cell>
+          <Table.Cell width={9}>
+            <label htmlFor='grossIncome'>Gross Income</label>
+            <Tooltip type='input' field='GrossIncome' style={{float: 'right'}}/>
+          </Table.Cell>
           <Table.Cell>
             <Input 
               type='text'
@@ -40,7 +43,10 @@ class Inputs extends Component {
           </Table.Cell>
         </Table.Row>
         <Table.Row>
-          <Table.Cell><label htmlFor='filingStatus'>Filing Status</label></Table.Cell>
+          <Table.Cell>
+            <label htmlFor='filingStatus'>Filing Status</label>
+            <Tooltip type='input' field='FilingStatus' style={{float: 'right'}}/>
+          </Table.Cell>
           <Table.Cell>
             <Button.Group fluid>
               <Button active={input.filingStatus == 'single'} onClick={(e) => dispatch(updateInputField('filingStatus','single'))}>Single</Button>
@@ -50,15 +56,24 @@ class Inputs extends Component {
           </Table.Cell>
         </Table.Row>   
         <Table.Row>
-          <Table.Cell><label htmlFor='dependentChildrenCount'>Children</label></Table.Cell>
+          <Table.Cell>
+            <label htmlFor='dependentChildrenCount'>Children</label>
+            <Tooltip type='input' field='DependentChildren' style={{float: 'right'}}/>
+          </Table.Cell>
           <Table.Cell><Input fluid type='text' id='dependentChildrenCount' value={input.dependentChildrenCount} onChange={this._handleInputChange('dependentChildrenCount')}/></Table.Cell>
         </Table.Row>
         <Table.Row>
-          <Table.Cell><label htmlFor='personalExemptions'>Personal Exemptions</label></Table.Cell>
+          <Table.Cell>
+            <label htmlFor='personalExemptions'>Personal Exemptions</label>
+            <Tooltip type='input' field='PersonalExemptions' style={{float: 'right'}}/>            
+          </Table.Cell>
           <Table.Cell><Input fluid type='text' id='personalExemptions' value={input.personalExemptions} onChange={this._handleInputChange('personalExemptions')}/></Table.Cell>
         </Table.Row>
         <Table.Row>
-          <Table.Cell><label htmlFor='itemize'>Itemize?</label></Table.Cell>
+          <Table.Cell>
+            <label htmlFor='itemize'>Itemize?</label>
+            <Tooltip type='input' field='Itemize' style={{float: 'right'}}/>            
+          </Table.Cell>
           <Table.Cell>
             <Button.Group fluid>
               <Button active={input.itemize == false} onClick={(e) => dispatch(updateInputField('itemize',false))}>Standard</Button>
@@ -70,7 +85,10 @@ class Inputs extends Component {
         {
           input.itemize && [
             <Table.Row>
-              <Table.Cell><label htmlFor='mortgageInterest'>Mortgage Interest</label></Table.Cell>
+              <Table.Cell>
+                <label htmlFor='mortgageInterest'>Mortgage Interest</label>
+                <Tooltip type='input' field='MortgageInterest' style={{float: 'right'}}/>
+              </Table.Cell>
               <Table.Cell>
                 <Input 
                   type='text'
@@ -87,7 +105,10 @@ class Inputs extends Component {
               </Table.Cell>
             </Table.Row>,
             <Table.Row>
-              <Table.Cell><label htmlFor='charitableDonations'>Charitable Donations</label></Table.Cell>
+              <Table.Cell>
+                <label htmlFor='charitableDonations'>Charitable Donations</label>
+                <Tooltip type='input' field='Charity' style={{float: 'right'}}/>
+              </Table.Cell>
               <Table.Cell>
                 <Input 
                   type='text'
@@ -104,7 +125,10 @@ class Inputs extends Component {
               </Table.Cell>
             </Table.Row>,
             <Table.Row>
-              <Table.Cell><label htmlFor='stateLocalPropertyTaxes'>State/Local Property Taxes</label></Table.Cell>
+              <Table.Cell>
+                <label htmlFor='stateLocalPropertyTaxes'>State/Local Property Taxes</label>
+                <Tooltip type='input' field='SALTProperty' style={{float: 'right'}}/>
+              </Table.Cell>
               <Table.Cell>
                 <Input 
                   type='text'
@@ -121,7 +145,10 @@ class Inputs extends Component {
               </Table.Cell>
             </Table.Row>,
             <Table.Row>
-              <Table.Cell><label htmlFor='stateLocalIncomeTaxes'>State/Local Income Taxes</label></Table.Cell>
+              <Table.Cell>
+                <label htmlFor='stateLocalIncomeTaxes'>State/Local Income Taxes</label>
+                <Tooltip type='input' field='SALTIncome' style={{float: 'right'}}/>
+              </Table.Cell>
               <Table.Cell>
                 <Input 
                   type='text'
