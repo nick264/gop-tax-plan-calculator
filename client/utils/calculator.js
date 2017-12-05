@@ -200,9 +200,14 @@ function calc_taxes(inputs) {
   outputs.TotalDeductionsAndExemptions = outputs.TotalDeductions+outputs.PersonalExemptionAmount
 
   outputs['GrossIncome']=inputs.GrossIncome;
-  outputs.TaxableIncome = outputs.GrossIncome - outputs.TotalDeductionsAndExemptions;
+  outputs.TaxableIncome = Math.max(0, outputs.GrossIncome - outputs.TotalDeductionsAndExemptions);
   outputs.TotalTaxExAMT = calc_tax(outputs.TaxableIncome, relevant_rules.Brackets);
-  outputs.EffectiveTaxRate = outputs.TotalTaxExAMT / outputs.TaxableIncome;
+  if (outputs.TaxableIncome == 0){
+    outputs.EffectiveTaxRate = 0  
+  }
+  else{
+    outputs.EffectiveTaxRate = outputs.TotalTaxExAMT / outputs.TaxableIncome;
+  }
   var ctc =  inputs.DependentChildren * relevant_rules.ChildTaxCredit
   outputs.ChildTaxCredit = reduce(ctc, inputs.GrossIncome, relevant_rules.ChildTaxCreditPhaseOut, 1000, 50 * inputs.DependentChildren, true)
 
