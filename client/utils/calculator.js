@@ -84,7 +84,9 @@ var rules = {
   "AMTExemption":54300,
   "AMTPhaseOut":120700,
   "AMTHighThreshold":187800,
-  "AMTRelevant":true
+  "AMTRelevant":true,
+  "MedicalExpenseThreshold":10,
+  "AMTMedicalExpenseThreshold":7.5,
   
   },
   "Married":{
@@ -97,33 +99,39 @@ var rules = {
   "AMTExemption":84500,
   "AMTPhaseOut":160900,
   "AMTHighThreshold":187800,
-  "AMTRelevant":true
+  "AMTRelevant":true,
+  "MedicalExpenseThreshold":10,
+  "AMTMedicalExpenseThreshold":7.5,
 
   }},
  "House": {
   "Single":{
   "Brackets":house_single,
-  "StandardDeduction":12200,
+  "StandardDeduction":12000,//NPR
   "PersonalExemption":0,
   "PersonalExemptionPhaseOut":320000,
   "ChildTaxCredit":1600,
   "ChildTaxCreditPhaseOut":115000, //https://www.cbpp.org/research/federal-tax/house-tax-bills-child-tax-credit-increase-excludes-thousands-of-children-in-low
-  "AMTRelevant":false
-  },
+  "AMTRelevant":false,
+  "MedicalExpenseThreshold":1e7,
+  "AMTMedicalExpenseThreshold":1e6,
+ },
   "Married":{
   "Brackets":house_married,
-  "StandardDeduction":24400,
+  "StandardDeduction":24000, //NPR
   "PersonalExemption":0,
   "PersonalExemptionPhaseOut":320000,
   "ChildTaxCredit":1600,
   "ChildTaxCreditPhaseOut":230000,
-  "AMTRelevant":false
+  "AMTRelevant":false,
+  "MedicalExpenseThreshold":1e6,
+  "AMTMedicalExpenseThreshold":1e6,
   }},
  "Senate": {
   "Single":{
   "Brackets":senate_single,
   "StandardDeduction":12000,
-  "PersonalExemption":0,
+  "PersonalExemption":0, //https://www.npr.org/2017/11/02/561639579/chart-how-the-tax-overhaul-would-affect-you
   "PersonalExemptionPhaseOut":320000, //unused
   "ChildTaxCredit":2000,
   "ChildTaxCreditPhaseOut":500000, //https://www.cbpp.org/research/federal-tax/senate-tax-bills-child-tax-credit-increase-provides-only-token-help-to-millions
@@ -131,7 +139,9 @@ var rules = {
   "AMTPhaseOut":156300,
 //  "AMTExemption":54300/50600 * 70300,
 //  "AMTPhaseOut":120700/112500 * 156300,  "AMTHighThreshold":187800,
-  "AMTRelevant":true
+  "AMTRelevant":true,
+  "MedicalExpenseThreshold":10,
+  "AMTMedicalExpenseThreshold":7.5,
   },
   "Married":{
   "Brackets":senate_married,
@@ -145,7 +155,9 @@ var rules = {
 //  "AMTExemption":84500/78750*109400,
 //  "AMTPhaseOut":160900/150000 * 208400,
   "AMTHighThreshold":187800,
-  "AMTRelevant":true
+  "AMTRelevant":true,
+  "MedicalExpenseThreshold":10,
+  "AMTMedicalExpenseThreshold":7.5,
   }},
   
 }
@@ -176,17 +188,18 @@ function calc_taxes(inputs) {
   if (inputs.Itemize){
     outputs.MortgageInterest = inputs.MortgageInterest
     outputs.Charity = inputs.Charity
+    outputs.Medical = Math.max(0, inputs.Medical - inputs.GrossIncome * relevant_rules.MedicalExpenseThreshold / 100 )
     if (inputs.Plan == 'Senate') {
-      outputs.SALTProperty = 0
+      outputs.SALTProperty = Math.min(inputs.SALTProperty, 10000) //NPR
       outputs.SALTIncome = 0
     } else if (inputs.Plan == 'House') {
-      outputs.SALTProperty = Math.min(inputs.SALTProperty, 10000)
+      outputs.SALTProperty = Math.min(inputs.SALTProperty, 10000) //NPR
       outputs.SALTIncome = 0
     } else if (inputs.Plan == 'Current') {
       outputs.SALTProperty = inputs.SALTProperty
       outputs.SALTIncome = inputs.SALTIncome
     }
-    outputs.TotalDeductions = outputs.SALTIncome+outputs.SALTProperty+outputs.Charity+outputs.MortgageInterest
+    outputs.TotalDeductions = outputs.SALTIncome+outputs.SALTProperty+outputs.Charity+outputs.MortgageInterest+outputs.Medical
 
   }
   else {
@@ -212,13 +225,15 @@ function calc_taxes(inputs) {
   outputs.ChildTaxCredit = reduce(ctc, inputs.GrossIncome, relevant_rules.ChildTaxCreditPhaseOut, 1000, 50 * inputs.DependentChildren, true)
 
   if (relevant_rules.AMTRelevant ) {
-    var amt_notional = inputs.GrossIncome - inputs.MortgageInterest - inputs.Charity
+    outputs.AMTMedical = Math.max(0, inputs.Medical - inputs.GrossIncome * relevant_rules.AMTMedicalExpenseThreshold / 100 )
+    var amt_notional = inputs.GrossIncome - inputs.MortgageInterest - inputs.Charity - outputs.AMTMedical
     var exemption = relevant_rules.AMTExemption
     var amt_returns = calc_amt(amt_notional, relevant_rules.AMTExemption, relevant_rules.AMTPhaseOut, relevant_rules.AMTHighThreshold)
     outputs.AMTIncome = amt_returns.Income
     outputs.AMT = amt_returns.Tax
   } 
   else  {
+    outputs.AMTMedical = 0
     outputs.AMTIncome = 0
     outputs.AMT = 0
   }
