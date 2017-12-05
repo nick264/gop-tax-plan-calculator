@@ -22,7 +22,7 @@ const fancyRound = (x,roundUp=false) => {
 }
 
 const getData = ({input,field}) => {
-  const xStep = fancyRound(input.grossIncome * 0.15)
+  const xStep = fancyRound(input.grossIncome * 0.05)
   const numSteps = Math.ceil(input.grossIncome * 2 / xStep)
   
   const currentValue = calculateFromInputs(input,'Current')[field]
