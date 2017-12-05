@@ -25,7 +25,7 @@ class Inputs extends Component {
         <Table.Row>
           <Table.Cell width={9}>
             <label htmlFor='grossIncome'>Gross Income</label>
-            <Tooltip type='input' field='GrossIncome' style={{float: 'right'}}/>
+            <Tooltip type='input' field='GrossIncome'/>
           </Table.Cell>
           <Table.Cell>
             <Input 
@@ -45,7 +45,7 @@ class Inputs extends Component {
         <Table.Row>
           <Table.Cell>
             <label htmlFor='filingStatus'>Filing Status</label>
-            <Tooltip type='input' field='FilingStatus' style={{float: 'right'}}/>
+            <Tooltip type='input' field='FilingStatus'/>
           </Table.Cell>
           <Table.Cell>
             <Button.Group fluid>
@@ -58,21 +58,21 @@ class Inputs extends Component {
         <Table.Row>
           <Table.Cell>
             <label htmlFor='dependentChildrenCount'>Children</label>
-            <Tooltip type='input' field='DependentChildren' style={{float: 'right'}}/>
+            <Tooltip type='input' field='DependentChildren'/>
           </Table.Cell>
           <Table.Cell><Input fluid type='text' id='dependentChildrenCount' value={input.dependentChildrenCount} onChange={this._handleInputChange('dependentChildrenCount')}/></Table.Cell>
         </Table.Row>
         <Table.Row>
           <Table.Cell>
             <label htmlFor='personalExemptions'>Personal Exemptions</label>
-            <Tooltip type='input' field='PersonalExemptions' style={{float: 'right'}}/>            
+            <Tooltip type='input' field='PersonalExemptions'/>            
           </Table.Cell>
           <Table.Cell><Input fluid type='text' id='personalExemptions' value={input.personalExemptions} onChange={this._handleInputChange('personalExemptions')}/></Table.Cell>
         </Table.Row>
         <Table.Row>
           <Table.Cell>
             <label htmlFor='itemize'>Itemize?</label>
-            <Tooltip type='input' field='Itemize' style={{float: 'right'}}/>            
+            <Tooltip type='input' field='Itemize'/>            
           </Table.Cell>
           <Table.Cell>
             <Button.Group fluid>
@@ -87,7 +87,7 @@ class Inputs extends Component {
             <Table.Row>
               <Table.Cell>
                 <label htmlFor='mortgageInterest'>Mortgage Interest</label>
-                <Tooltip type='input' field='MortgageInterest' style={{float: 'right'}}/>
+                <Tooltip type='input' field='MortgageInterest'/>
               </Table.Cell>
               <Table.Cell>
                 <Input 
@@ -107,7 +107,7 @@ class Inputs extends Component {
             <Table.Row>
               <Table.Cell>
                 <label htmlFor='charitableDonations'>Charitable Donations</label>
-                <Tooltip type='input' field='Charity' style={{float: 'right'}}/>
+                <Tooltip type='input' field='Charity'/>
               </Table.Cell>
               <Table.Cell>
                 <Input 
@@ -127,7 +127,7 @@ class Inputs extends Component {
             <Table.Row>
               <Table.Cell>
                 <label htmlFor='stateLocalPropertyTaxes'>State/Local Property Taxes</label>
-                <Tooltip type='input' field='SALTProperty' style={{float: 'right'}}/>
+                <Tooltip type='input' field='SALTProperty'/>
               </Table.Cell>
               <Table.Cell>
                 <Input 
@@ -147,7 +147,7 @@ class Inputs extends Component {
             <Table.Row>
               <Table.Cell>
                 <label htmlFor='stateLocalIncomeTaxes'>State/Local Income Taxes</label>
-                <Tooltip type='input' field='SALTIncome' style={{float: 'right'}}/>
+                <Tooltip type='input' field='SALTIncome'/>
               </Table.Cell>
               <Table.Cell>
                 <Input 
@@ -167,7 +167,7 @@ class Inputs extends Component {
             <Table.Row>
               <Table.Cell>
                 <label htmlFor='medical'>Medical Expenses</label>
-                <Tooltip type='input' field='Medical' style={{float: 'right'}}/>
+                <Tooltip type='input' field='Medical'/>
               </Table.Cell>
               <Table.Cell>
                 <Input 
