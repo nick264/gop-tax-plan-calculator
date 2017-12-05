@@ -273,7 +273,7 @@ function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
 }
 
-export function calculateFromInputs({grossIncome, filingStatus, itemize, dependentChildrenCount, mortgageInterest, charitableDonations, stateLocalPropertyTaxes, stateLocalIncomeTaxes, personalExemptions }, plan) {
+export function calculateFromInputs({grossIncome, filingStatus, itemize, dependentChildrenCount, mortgageInterest, charitableDonations, stateLocalPropertyTaxes, stateLocalIncomeTaxes, personalExemptions, medical }, plan) {
   return calc_taxes({
     GrossIncome: parseInt(grossIncome),
     FilingStatus: capitalizeFirstLetter(filingStatus),
@@ -284,6 +284,7 @@ export function calculateFromInputs({grossIncome, filingStatus, itemize, depende
     Charity: parseInt(charitableDonations),
     SALTProperty: parseInt(stateLocalPropertyTaxes),
     SALTIncome: parseInt(stateLocalIncomeTaxes),
+    Medical: parseInt(medical),
     Plan: plan
   })
 }

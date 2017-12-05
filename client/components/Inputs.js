@@ -163,6 +163,26 @@ class Inputs extends Component {
                   <NumberFormat value={input.stateLocalIncomeTaxes} thousandSeparator={true} onValueChange={({value}) => this._updateField('stateLocalIncomeTaxes',value)}/>
                 </Input>
               </Table.Cell>
+            </Table.Row>,
+            <Table.Row>
+              <Table.Cell>
+                <label htmlFor='medical'>Medical Expenses</label>
+                <Tooltip type='input' field='Medical' style={{float: 'right'}}/>
+              </Table.Cell>
+              <Table.Cell>
+                <Input 
+                  type='text'
+                  id='medical'
+                  labelPosition='left'
+                  fluid
+                >
+                  <Label
+                    basic
+                    content='$'
+                  />
+                  <NumberFormat value={input.medical} thousandSeparator={true} onValueChange={({value}) => this._updateField('medical',value)}/>
+                </Input>
+              </Table.Cell>
             </Table.Row>
           ]
         }
