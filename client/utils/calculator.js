@@ -190,7 +190,7 @@ function calc_taxes(inputs) {
 
   }
   else {
-    outputs.TotalDeductions = 12000 
+    outputs.TotalDeductions = relevant_rules.StandardDeduction 
   }
   
   outputs.PersonalExemptions = inputs.PersonalExemptions
