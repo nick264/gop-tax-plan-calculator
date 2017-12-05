@@ -9,7 +9,7 @@ const Tooltip = ({type, field, style}) => {
   if(content) {
     return(
       <Popup
-          trigger={<Icon style={Object.assign({},style,{marginLeft: '4px'})} name='help circle'/>}
+          trigger={<Icon style={Object.assign({},style,{marginLeft: '4px'})} name='help circle' color='grey'/>}
           content={content}
       />
     )    
