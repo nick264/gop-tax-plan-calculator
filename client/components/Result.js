@@ -4,10 +4,11 @@ import _ from 'lodash'
 
 import FormatAmount from './FormatAmount'
 import Details from './Details'
+import Tooltip from './Tooltip'
+
 import { Table, Button, Icon, Header } from 'semantic-ui-react'
 
 import { calculateFromInputs } from '../utils/calculator'
-
 import { showDetails } from '../actions/ui'
 
 
@@ -92,6 +93,7 @@ const Result = ({input, ui, dispatch}) => {
         <Table.Row>
           <Table.Cell>
             Total Tax
+            <Tooltip type='output' field='TotalTax'/>
           </Table.Cell>
           <Table.Cell>
             <FormatAmount value={resultsCurrent.TotalTax}/>
@@ -110,6 +112,7 @@ const Result = ({input, ui, dispatch}) => {
         <Table.Row>
           <Table.Cell>
             Effective Rate
+            <Tooltip type='output' field='EffectiveTaxRateOnGross'/>
           </Table.Cell>
           <Table.Cell>
             <FormatAmount value={resultsCurrent.EffectiveTaxRateOnGross} pctOrAbs/>

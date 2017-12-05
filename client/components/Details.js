@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import FormatAmount from './FormatAmount'
 import { Table, Button } from 'semantic-ui-react'
 
+import Tooltip from './Tooltip'
+
 const DetailsRow = ({name, field, header, data, pctOrAbs}) => {
   const TableCellTag = header ? Table.HeaderCell : Table.Cell
   
@@ -9,7 +11,10 @@ const DetailsRow = ({name, field, header, data, pctOrAbs}) => {
   
   return(
     <Table.Row>
-      <TableCellTag>{name}</TableCellTag>
+      <TableCellTag>
+        {name}
+        <Tooltip type='output' field={field}/>
+      </TableCellTag>
       <TableCellTag><FormatAmount value={data.resultsCurrent[field]} pctOrAbs={pctOrAbs}/></TableCellTag>
       <TableCellTag><FormatAmount value={data.resultsHouse[field]} pctOrAbs={pctOrAbs}/></TableCellTag>
       <TableCellTag><FormatAmount value={data.resultsSenate[field]} pctOrAbs={pctOrAbs}/></TableCellTag>
