@@ -83,8 +83,9 @@ class ChartIncomeSensitivity extends Component {
     this.line = container
       .append("line")
       .attr("class", "x")
-      .style("stroke", "blue")
+      .style("stroke", "#2185d0")
       .style("stroke-dasharray", "3,3")
+      .style("stroke-width", "2")
       .style("opacity", 0.5)
       .attr({
         x1: x(this.props.input.grossIncome/maxX), x2: x(this.props.input.grossIncome/maxX),
