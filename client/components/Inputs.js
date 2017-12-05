@@ -197,5 +197,4 @@ const mapStateToProps = (state) => {
   })
 }
 
-// export default Index;
 export default connect(mapStateToProps)(Inputs)

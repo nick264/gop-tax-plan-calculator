@@ -31,11 +31,12 @@ export default function configureStore(preloadedState = {}) {
   //     charitableDonations: 0,
   //     stateLocalPropertyTaxes: 0,
   //     stateLocalIncomeTaxes: 0,
-  //     personalExemptions: 0
+  //     personalExemptions: 0,
+  //     medical: 0
   //   },
   //   ui: {
   //     resultsVisible: true,
-  //     detailsVisible: true
+  //     detailsVisible: false,
   //   }
   // }
   

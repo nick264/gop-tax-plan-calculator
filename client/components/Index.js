@@ -1,16 +1,17 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 
-import { Container, Header, Segment, Grid, Icon, Divider, Menu, Image, Button } from 'semantic-ui-react'
+import { Container, Header, Segment, Grid, Icon, Divider, Menu, Image, Button, Dropdown } from 'semantic-ui-react'
 
 // import IconCalculator from 'react-icons/lib/fa/calculator'
 // import IconList from 'react-icons/lib/fa/list'
 
-import { revealResults } from '../actions/ui'
+import { revealResults, toggleChartEffectiveRate } from '../actions/ui'
 import { calculateFromInputs } from '../utils/calculator'
 
 import Result from './Result'
 import Inputs from './Inputs'
+import ChartIncomeSensitivity from './ChartIncomeSensitivity'
 
 // import 'semantic-ui-css/semantic.min.css'
 
@@ -87,6 +88,19 @@ class Index extends Component {
                       </Header.Content>
                     </Header>
                     <Result/>
+                    <Segment.Group>
+                      <Segment clearing style={{padding: '5px 10px'}}>
+                        <Header as='h4' floated='left' style={{margin: '8px 0' }}>
+                          If your income changed...
+                        </Header>
+                        <Header floated='right' style={{margin: '0'}}>
+                          <Dropdown button basic floating options={[{text: '$', value: false},{text: '%', value: true}]} value={ui.chartEffectiveRate || false} onChange={(e,option) => { console.log(option); dispatch(toggleChartEffectiveRate(option.value))}}/>
+                        </Header>
+                      </Segment>
+                      <Segment attached>
+                        <ChartIncomeSensitivity/>
+                      </Segment>
+                    </Segment.Group>
                   </Grid.Column>
               }
             </Grid.Row>
@@ -106,15 +120,3 @@ const mapStateToProps = (state) => {
 
 // export default Index;
 export default connect(mapStateToProps)(Index)
-
-
-
-              // {
-              //   <Grid.Column width={1}>
-              //     <Grid.Row>
-              //       <Button circular icon onClick={() => dispatch(revealResults())}>
-              //         <Icon fitted name='chevron right' size='big'/>
-              //       </Button>
-              //     </Grid.Row>
-              //   </Grid.Column>
-              // }

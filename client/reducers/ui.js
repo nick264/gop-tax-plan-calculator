@@ -1,6 +1,7 @@
 import {
   UI_REVEAL_RESULTS,
-  UI_SHOW_DETAILS
+  UI_SHOW_DETAILS,
+  UI_TOGGLE_CHART_EFFECTIVE_RATE
 } from '../actions/ui'
 
 const inputReducer = (state={ resultsVisible: false, detailsVisible: false },action) => {
@@ -12,6 +13,10 @@ const inputReducer = (state={ resultsVisible: false, detailsVisible: false },act
     case UI_SHOW_DETAILS:
       return Object.assign({}, state, {
         detailsVisible: true
+      })
+    case UI_TOGGLE_CHART_EFFECTIVE_RATE:
+      return Object.assign({}, state, {
+        chartEffectiveRate: action.value
       })
     default:
       return state
