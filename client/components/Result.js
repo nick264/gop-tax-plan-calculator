@@ -2,29 +2,13 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import _ from 'lodash'
 
-// import formatNumber from 'format-number'
-import NumberFormat from 'react-number-format'
+import FormatAmount from './FormatAmount'
+import Details from './Details'
+import { Table, Button, Icon } from 'semantic-ui-react'
 
 import { calculateFromInputs } from '../utils/calculator'
 
-import { Table, Button, Icon } from 'semantic-ui-react'
-
 import { showDetails } from '../actions/ui'
-
-const FormatAmount = ({value, pctOrAbs, prefix}) => {
-  prefix = prefix || ''
-  
-  if(pctOrAbs) {
-    return(
-      <NumberFormat thousandSeparator={true} displayType='text' value={value * 100} prefix={prefix} suffix='%' fixedDecimalScale={true} decimalScale={1}/>
-    )
-  }
-  else {
-    return(
-      <NumberFormat thousandSeparator={true} displayType='text' value={value} prefix={prefix + '$'} decimalScale={0}/>
-    )
-  }
-}
 
 const FormatImpact = ({value, pctOrAbs}) => {  
   let color = null
@@ -75,15 +59,15 @@ const Result = ({input, ui, dispatch}) => {
             Total Tax
           </Table.Cell>
           <Table.Cell>
-            <NumberFormat thousandSeparator={true} displayType='text' value={resultsCurrent.TotalTax} prefix='$' decimalScale={0}/>
+            <FormatAmount value={resultsCurrent.TotalTax}/>
           </Table.Cell>
           <Table.Cell>
-            <NumberFormat thousandSeparator={true} displayType='text' value={resultsHouse.TotalTax} prefix='$' decimalScale={0}/>
+            <FormatAmount value={resultsHouse.TotalTax}/>
             &nbsp;
             <FormatImpact value={houseTaxImpact} pctOrAbs={false}/>
           </Table.Cell>
           <Table.Cell>
-            <NumberFormat thousandSeparator={true} displayType='text' value={resultsSenate.TotalTax} prefix='$' decimalScale={0}/>
+            <FormatAmount value={resultsSenate.TotalTax}/>
             &nbsp;
             <FormatImpact value={senateTaxImpact} pctOrAbs={false}/>
           </Table.Cell>
@@ -93,136 +77,28 @@ const Result = ({input, ui, dispatch}) => {
             Effective Rate
           </Table.Cell>
           <Table.Cell>
-            <NumberFormat thousandSeparator={true} displayType='text' value={resultsCurrent.EffectiveTaxRateOnGross * 100} suffix='%' fixedDecimalScale={true} decimalScale={1}/>
+            <FormatAmount value={resultsCurrent.EffectiveTaxRateOnGross} pctOrAbs/>
           </Table.Cell>
           <Table.Cell>
-            <NumberFormat thousandSeparator={true} displayType='text' value={resultsHouse.EffectiveTaxRateOnGross * 100} suffix='%' fixedDecimalScale={true} decimalScale={1}/>
+            <FormatAmount value={resultsHouse.EffectiveTaxRateOnGross} pctOrAbs/>
             &nbsp;
             <FormatImpact value={houseRateImpact} pctOrAbs={true}/>
           </Table.Cell>
           <Table.Cell>
-            <NumberFormat thousandSeparator={true} displayType='text' value={resultsSenate.EffectiveTaxRateOnGross * 100} suffix='%' fixedDecimalScale={true} decimalScale={1}/>
+            <FormatAmount value={resultsSenate.EffectiveTaxRateOnGross} pctOrAbs/>
             &nbsp;
             <FormatImpact value={senateRateImpact} pctOrAbs={true}/>
           </Table.Cell>
         </Table.Row>
       </Table.Body>
       {
-        ui.detailsVisible && [
-          <Table.Body>
-            <Table.Row>
-              <Table.HeaderCell colSpan='4'>&nbsp;</Table.HeaderCell>
-            </Table.Row>
-          </Table.Body>,
-          <Table.Header>
-            <Table.Row>
-              <Table.HeaderCell>Gross Income</Table.HeaderCell>
-              <Table.HeaderCell><FormatAmount value={resultsCurrent.GrossIncome}/></Table.HeaderCell>
-              <Table.HeaderCell><FormatAmount value={resultsHouse.GrossIncome}/></Table.HeaderCell>
-              <Table.HeaderCell><FormatAmount value={resultsSenate.GrossIncome}/></Table.HeaderCell>
-            </Table.Row>
-          </Table.Header>,
-          <Table.Body>
-            <Table.Row>
-              <Table.Cell>Standard Deduction</Table.Cell>
-              <Table.Cell><FormatAmount value={resultsCurrent.StandardDeduction}/></Table.Cell>
-              <Table.Cell><FormatAmount value={resultsHouse.StandardDeduction}/></Table.Cell>
-              <Table.Cell><FormatAmount value={resultsSenate.StandardDeduction}/></Table.Cell>
-            </Table.Row>
-            <Table.Row>
-              <Table.Cell>Mortgage Interest Deduction</Table.Cell>
-              <Table.Cell><FormatAmount value={resultsCurrent.MortgageInterest}/></Table.Cell>
-              <Table.Cell><FormatAmount value={resultsHouse.MortgageInterest}/></Table.Cell>
-              <Table.Cell><FormatAmount value={resultsSenate.MortgageInterest}/></Table.Cell>
-            </Table.Row>
-            <Table.Row>
-              <Table.Cell>State and Local Property Tax Deduction</Table.Cell>
-              <Table.Cell><FormatAmount value={resultsCurrent.SALTProperty}/></Table.Cell>
-              <Table.Cell><FormatAmount value={resultsHouse.SALTProperty}/></Table.Cell>
-              <Table.Cell><FormatAmount value={resultsSenate.SALTProperty}/></Table.Cell>
-            </Table.Row>
-            <Table.Row>
-              <Table.Cell>State and Local Income Tax Deduction</Table.Cell>
-              <Table.Cell><FormatAmount value={resultsCurrent.SALTIncome}/></Table.Cell>
-              <Table.Cell><FormatAmount value={resultsHouse.SALTIncome}/></Table.Cell>
-              <Table.Cell><FormatAmount value={resultsSenate.SALTIncome}/></Table.Cell>
-            </Table.Row>
-            <Table.Row>
-              <Table.Cell>Personal Exemption Amount</Table.Cell>
-              <Table.Cell><FormatAmount value={resultsCurrent.PersonalExemptionAmount}/></Table.Cell>
-              <Table.Cell><FormatAmount value={resultsHouse.PersonalExemptionAmount}/></Table.Cell>
-              <Table.Cell><FormatAmount value={resultsSenate.PersonalExemptionAmount}/></Table.Cell>
-            </Table.Row>
-          </Table.Body>,
-          <Table.Header>          
-            <Table.Row>
-              <Table.HeaderCell>Taxable Income</Table.HeaderCell>
-              <Table.HeaderCell><FormatAmount value={resultsCurrent.TaxableIncome}/></Table.HeaderCell>
-              <Table.HeaderCell><FormatAmount value={resultsHouse.TaxableIncome}/></Table.HeaderCell>
-              <Table.HeaderCell><FormatAmount value={resultsSenate.TaxableIncome}/></Table.HeaderCell>
-            </Table.Row>
-          </Table.Header>,
-          <Table.Body>
-            <Table.Row>
-              <Table.Cell>Avg Tax Bracket</Table.Cell>
-              <Table.Cell><FormatAmount value={resultsCurrent.EffectiveTaxRate} pctOrAbs={true}/></Table.Cell>
-              <Table.Cell><FormatAmount value={resultsHouse.EffectiveTaxRate} pctOrAbs={true}/></Table.Cell>
-              <Table.Cell><FormatAmount value={resultsSenate.EffectiveTaxRate} pctOrAbs={true}/></Table.Cell>
-            </Table.Row>
-          </Table.Body>
-        ]
-      }
-      {
-        ui.detailsVisible && ( resultsCurrent.AMTActive || resultsHouse.AMTActive || resultsSenate.AMTActive ) &&
-          [
-            <Table.Header>                    
-              <Table.Row>
-                <Table.HeaderCell>Total Tax Before AMT/Credits</Table.HeaderCell>
-                <Table.HeaderCell><FormatAmount value={resultsCurrent.TotalTaxExAMT}/></Table.HeaderCell>
-                <Table.HeaderCell><FormatAmount value={resultsHouse.TotalTaxExAMT}/></Table.HeaderCell>
-                <Table.HeaderCell><FormatAmount value={resultsSenate.TotalTaxExAMT}/></Table.HeaderCell>
-              </Table.Row>
-            </Table.Header>,
-            <Table.Body>
-              <Table.Row>
-                <Table.Cell>AMT Triggered</Table.Cell>
-                <Table.Cell>{resultsCurrent.AMTActive ? 'YES' : ''}</Table.Cell>
-                <Table.Cell>{resultsHouse.AMTActive ? 'YES' : ''}</Table.Cell>
-                <Table.Cell>{resultsSenate.AMTActive ? 'YES' : ''}</Table.Cell>
-              </Table.Row>
-            </Table.Body>
-          ]
-      }
-      {
-        ui.detailsVisible && [
-          <Table.Header>          
-            <Table.Row>
-              <Table.HeaderCell>Total Tax Before Credits</Table.HeaderCell>
-              <Table.HeaderCell><FormatAmount value={resultsCurrent.TotalTaxPreCredits}/></Table.HeaderCell>
-              <Table.HeaderCell><FormatAmount value={resultsHouse.TotalTaxPreCredits}/></Table.HeaderCell>
-              <Table.HeaderCell><FormatAmount value={resultsSenate.TotalTaxPreCredits}/></Table.HeaderCell>
-            </Table.Row>
-          </Table.Header>,
-          <Table.Body>
-            <Table.Row>
-              <Table.Cell>Child Tax Credit</Table.Cell>
-              <Table.Cell><FormatAmount value={resultsCurrent.ChildTaxCredit}/></Table.Cell>
-              <Table.Cell><FormatAmount value={resultsHouse.ChildTaxCredit}/></Table.Cell>
-              <Table.Cell><FormatAmount value={resultsSenate.ChildTaxCredit}/></Table.Cell>
-            </Table.Row>
-          </Table.Body>,
-          <Table.Header>
-            <Table.Row>
-              <Table.HeaderCell>Total Tax</Table.HeaderCell>
-              <Table.HeaderCell><FormatAmount value={resultsCurrent.TotalTax}/></Table.HeaderCell>
-              <Table.HeaderCell><FormatAmount value={resultsHouse.TotalTax}/></Table.HeaderCell>
-              <Table.HeaderCell><FormatAmount value={resultsSenate.TotalTax}/></Table.HeaderCell>
-            </Table.Row>
-          </Table.Header>
-        ]
-      }
-      {
-        !ui.detailsVisible &&
+        ui.detailsVisible ?
+          <Details
+            resultsCurrent={resultsCurrent}
+            resultsHouse={resultsHouse}
+            resultsSenate={resultsSenate}
+          />
+        :
           <Table.Footer fullWidth>
             <Table.Row>
               <Table.HeaderCell />
