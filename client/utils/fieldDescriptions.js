@@ -8,7 +8,7 @@ const DESCRIPTIONS = {
     "MortgageInterest": "The amount of interest you pay on your mortgage ",
     "Charity": "The amount of tax deductible donations to charity.",
     "SALTProperty": "State and local property taxes.",
-    "MedicalExpenses": "Total out of pocket medical expenses. We'll work out whether they are deductible. These are only deductible if they exceed 10% of your gross income, and are never deductible under the House plan.",
+    "Medical": "Total out of pocket medical expenses. We'll work out whether they are deductible. These are only deductible if they exceed 10% of your gross income, and are never deductible under the House plan.",
     "SALTIncome": "State and Local income taxes paid. For now enter this number manually. We are looking at calculating state tax automatically.",
     "Plan": "Not entered by user."
   },
