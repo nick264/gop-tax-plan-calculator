@@ -1,6 +1,7 @@
 const webpack = require('webpack');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 
-module.exports = {
+const config = {
   entry: './client/startup/TaxCalculatorApp',
   output: {
     path: __dirname + '/public',
@@ -39,6 +40,15 @@ module.exports = {
   },
   plugins: [
     new webpack.NamedModulesPlugin(),
-    new webpack.HotModuleReplacementPlugin()
+    new webpack.HotModuleReplacementPlugin(),
+    
   ]
 };
+
+if (process.env.NODE_ENV === 'production') {
+  config.plugins.push(
+    new UglifyJsPlugin()
+  )
+}
+
+module.exports = config
