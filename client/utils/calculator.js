@@ -64,12 +64,12 @@ var senate_single = [
 
 var senate_married = [
   [19050, 10],
-  [77400, 15],
-  [140000, 25],
-  [320000, 28],
-  [400000, 33],
+  [77400, 12],
+  [140000, 22],
+  [320000, 24],
+  [400000, 32],
   [1000000, 35],
-  [1e20, 39.6]
+  [1e20, 38.5]
 ];
 
 var rules = {
@@ -192,6 +192,7 @@ function calc_taxes(inputs) {
   else {
     outputs.TotalDeductions = relevant_rules.StandardDeduction 
   }
+  outputs.StandardDeduction = relevant_rules.StandardDeduction 
   
   outputs.PersonalExemptions = inputs.PersonalExemptions
   var pe =  inputs.PersonalExemptions * relevant_rules.PersonalExemption
