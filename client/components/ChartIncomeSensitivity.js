@@ -25,7 +25,7 @@ const fancyRound = (x,roundType=null) => {
   
   const multFactor = 2.5/2.0 // i.e. map [ 1, 2, 4, 8 ] to [ 1, 2.5, 5, 10 ]
 
-  const nearestPowerOf10 = 10 ** Math.floor(Math.log10(xAbs))
+  const nearestPowerOf10 = Math.pow(10, Math.floor(Math.log10(xAbs)))
   const scaledPowerOf2 = Math.log(xAbs/nearestPowerOf10/multFactor) / Math.log(2)
   
   let scaledPowerOf2Rounded = null
@@ -41,7 +41,7 @@ const fancyRound = (x,roundType=null) => {
     scaledPowerOf2Rounded = Math.round( scaledPowerOf2 )
   }
   
-  return xSign * nearestPowerOf10 * ( 2 ** scaledPowerOf2Rounded ) * multFactor    
+  return xSign * nearestPowerOf10 * Math.pow(2,scaledPowerOf2Rounded) * multFactor    
 }
 
 const getData = ({input,field,absOrDiffs}) => {
