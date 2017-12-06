@@ -42,10 +42,6 @@ const config = {
     new webpack.NamedModulesPlugin(),
     new webpack.HotModuleReplacementPlugin(),
   ],
-  resolve: {
-    alias: {},
-    extensions: ['.js', '.jsx', '.less'],
-  }
 };
 
 if (process.env.NODE_ENV === 'production') {
