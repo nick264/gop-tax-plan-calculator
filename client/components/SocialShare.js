@@ -33,7 +33,7 @@ const SocialShare = () => {
   
   return(
     <div className={styles.SocialContainer}>
-      <FacebookShareButton url={url} quote={title}>
+      <FacebookShareButton url={url}>
         <FacebookIcon size={iconSize} round={true}/>
       </FacebookShareButton>
       <TwitterShareButton url={url} title={title}>
