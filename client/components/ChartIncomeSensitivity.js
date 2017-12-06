@@ -5,38 +5,67 @@ import NVD3Chart from 'react-nvd3'
 
 import { calculateFromInputs } from '../utils/calculator'
 
-const fancyRound = (x,roundUp=false) => {
+import _ from 'lodash'
+
+import {
+  UI_CHART_INCOME_SENSITIVITY_TYPE_ABS_DOLLARS,
+  UI_CHART_INCOME_SENSITIVITY_TYPE_DIFF_DOLLARS,
+  UI_CHART_INCOME_SENSITIVITY_TYPE_ABS_RATE,
+  UI_CHART_INCOME_SENSITIVITY_TYPE_DIFF_RATE
+} from '../actions/ui'
+
+const fancyRound = (x,roundType=null) => {
+  if(x == 0){
+    return 0
+  }
+  
   // for nearest power of 10 below X, choose closest of 1x, 2.5x, 5x or 10x
+  const xAbs = Math.abs(x)
+  const xSign = Math.sign(x)
   
   const multFactor = 2.5/2.0 // i.e. map [ 1, 2, 4, 8 ] to [ 1, 2.5, 5, 10 ]
 
-  const nearestPowerOf10 = 10 ** Math.floor(Math.log10(x))
-  const scaledPowerOf2 = Math.log(x/nearestPowerOf10/multFactor) / Math.log(2)
+  const nearestPowerOf10 = 10 ** Math.floor(Math.log10(xAbs))
+  const scaledPowerOf2 = Math.log(xAbs/nearestPowerOf10/multFactor) / Math.log(2)
   
-  if(roundUp) {
-    return nearestPowerOf10 * ( 2 ** Math.ceil( scaledPowerOf2 ) ) * multFactor    
+  let scaledPowerOf2Rounded = null
+  
+  
+  if(roundType == 1) {
+    scaledPowerOf2Rounded = Math.ceil( scaledPowerOf2 )
+  }
+  else if(roundType == -1) {
+    scaledPowerOf2Rounded = Math.floor( scaledPowerOf2 )
   }
   else {
-    return nearestPowerOf10 * ( 2 ** Math.round( scaledPowerOf2 ) ) * multFactor    
+    scaledPowerOf2Rounded = Math.round( scaledPowerOf2 )
   }
+  
+  return xSign * nearestPowerOf10 * ( 2 ** scaledPowerOf2Rounded ) * multFactor    
 }
 
-const getData = ({input,field}) => {
+const getData = ({input,field,absOrDiffs}) => {
   const xStep = fancyRound(input.grossIncome * 0.05)
   const numSteps = Math.ceil(input.grossIncome * 2 / xStep)
   
   const currentValue = calculateFromInputs(input,'Current')[field]
   
-  let retval = [
-    { key: 'Current', values: [] },
+  let retval = []
+  
+  if(absOrDiffs) {
+    retval = [{ key: 'Current', values: [] }]
+  }
+  
+  retval = retval.concat([
     { key: 'Senate', values: [] },
     { key: 'House', values: [] },
-  ]
+  ])
   
   let dataCurrent = []
   let dataHouse = []
   let dataSenate = []
   let maxY = null
+  let minY = 0
   
   for( var n = 0; n <= numSteps; n++ ) {
     const thisGrossIncome = n * xStep
@@ -44,23 +73,33 @@ const getData = ({input,field}) => {
     const resultCurrent = calculateFromInputs(thisInput,'Current')
     const resultHouse = calculateFromInputs(thisInput,'House')
     const resultSenate = calculateFromInputs(thisInput,'Senate')
-
-    retval[0].values.push([thisGrossIncome, resultCurrent[field]])
-    retval[1].values.push([thisGrossIncome, resultHouse[field]])
-    retval[2].values.push([thisGrossIncome, resultSenate[field]])
     
-    for(const y of [resultCurrent[field],resultHouse[field],resultSenate[field]]) {
-      if(isNaN(y)) { continue }
-      maxY = Math.max(maxY,y)
+    if(absOrDiffs) {
+      retval[0].values.push([thisGrossIncome, resultCurrent[field]])
+      retval[1].values.push([thisGrossIncome, resultSenate[field]])
+      retval[2].values.push([thisGrossIncome, resultHouse[field]])
     }
+    else {
+      retval[0].values.push([thisGrossIncome, resultSenate[field] - resultCurrent[field]])
+      retval[1].values.push([thisGrossIncome, resultHouse[field] - resultCurrent[field]])
+    }
+    
   }
+  
+  const allYValues = _.filter(
+    _.flatten(
+      retval.map((r) => r.values).map((v) => v.map((d) => d[1]))
+    ),
+    (val) => !isNaN(val)
+  )
   
   return({
     datum: retval,
     xStep: xStep,
     currentLevel: currentValue,
     maxX: xStep * numSteps,
-    maxY: fancyRound(maxY,true)
+    maxY: fancyRound(_.max(allYValues),1),
+    minY: fancyRound(_.min(allYValues),1)
   })
 }
 
@@ -110,26 +149,35 @@ class ChartIncomeSensitivity extends Component {
   
   render() {
     const {input,ui} = this.props
-    this.showEffectiveRate = ui.chartEffectiveRate
+    this.chartIncomeSensitivityType = ui.chartIncomeSensitivityType
+    this.absOrDiffs = [
+          UI_CHART_INCOME_SENSITIVITY_TYPE_ABS_RATE,
+          UI_CHART_INCOME_SENSITIVITY_TYPE_ABS_DOLLARS
+        ].includes(ui.chartIncomeSensitivityType)
+    this.rateOrDollars = [
+          UI_CHART_INCOME_SENSITIVITY_TYPE_ABS_RATE,
+          UI_CHART_INCOME_SENSITIVITY_TYPE_DIFF_RATE
+        ].includes(ui.chartIncomeSensitivityType)
     this.data = getData({
       input,
-      field: this.showEffectiveRate ? 'EffectiveTaxRateOnGross' : 'TotalTax'
+      field: this.rateOrDollars ? 'EffectiveTaxRateOnGross' : 'TotalTax',
+      absOrDiffs: this.absOrDiffs
     })
     console.log(this.data)
     
-    const yAxis = this.showEffectiveRate ?
+    const yAxis = this.rateOrDollars ?
       {
-        tickFormat: (d) => { return d3.format(",")(Math.round(d*100)) + '%' },
-        axisLabel: 'Rate'      
+        tickFormat: (d) => { return d3.format(",")(_.round(d*100,1)) + '%' },
+        axisLabel: this.absOrDiffs ? 'Rate' : 'Rate Impact'
       } 
     :
       {
         tickFormat: (d) => { return '$' + d3.format(",")(Math.round(d)) },
-        axisLabel: 'Tax'
+        axisLabel: this.absOrDiffs ? 'Tax' : 'Tax Impact'
       }
     
     this.xDomain = [0,this.data.maxX]
-    this.yDomain = [0,this.data.maxY]
+    this.yDomain = [this.data.minY,this.data.maxY]
     
     return(
       <div>

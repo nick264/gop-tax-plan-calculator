@@ -8,13 +8,20 @@ import { Container, Header, Segment, Grid, Icon, Divider, Menu, Image, Button, D
 
 import styles from '../css/stickyFooter.css'
 
-import { revealResults, toggleChartEffectiveRate } from '../actions/ui'
+import { revealResults, setChartIncomeSensitivityType } from '../actions/ui'
 import { calculateFromInputs } from '../utils/calculator'
 
 import Result from './Result'
 import Inputs from './Inputs'
 import ChartIncomeSensitivity from './ChartIncomeSensitivity'
 import SocialShare from './SocialShare'
+
+import {
+  UI_CHART_INCOME_SENSITIVITY_TYPE_ABS_DOLLARS,
+  UI_CHART_INCOME_SENSITIVITY_TYPE_DIFF_DOLLARS,
+  UI_CHART_INCOME_SENSITIVITY_TYPE_ABS_RATE,
+  UI_CHART_INCOME_SENSITIVITY_TYPE_DIFF_RATE
+} from '../actions/ui'
 
 class Index extends Component {
   constructor(props) {
@@ -93,7 +100,14 @@ class Index extends Component {
                           If your income changed...
                         </Header>
                         <Header floated='right' style={{margin: '0'}}>
-                          <Dropdown button basic floating options={[{text: '$', value: false},{text: '%', value: true}]} value={ui.chartEffectiveRate || false} onChange={(e,option) => { console.log(option); dispatch(toggleChartEffectiveRate(option.value))}}/>
+                          <Dropdown button basic floating
+                            options={[
+                              {text: 'Diff $', value: UI_CHART_INCOME_SENSITIVITY_TYPE_DIFF_DOLLARS},
+                              {text: 'Diff %', value: UI_CHART_INCOME_SENSITIVITY_TYPE_DIFF_RATE},
+                              {text: 'Abs $', value: UI_CHART_INCOME_SENSITIVITY_TYPE_ABS_DOLLARS},
+                              {text: 'Abs %', value: UI_CHART_INCOME_SENSITIVITY_TYPE_ABS_RATE},
+                            ]}
+                            value={ui.chartIncomeSensitivityType} onChange={(e,option) => { console.log(option); dispatch(setChartIncomeSensitivityType(option.value))}}/>
                         </Header>
                       </Segment>
                       <Segment attached>

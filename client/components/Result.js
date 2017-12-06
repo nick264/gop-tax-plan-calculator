@@ -76,7 +76,7 @@ const Result = ({input, ui, dispatch}) => {
     <Table color='green'>
       <Table.Header>
         <Table.Row>
-          <Table.HeaderCell colspan='4'>
+          <Table.HeaderCell colSpan='4'>
             <Header textAlign='center'>
               <ImpactSummary house={houseTaxImpact} senate={senateTaxImpact}/>
             </Header>
@@ -139,7 +139,7 @@ const Result = ({input, ui, dispatch}) => {
         :
           <Table.Footer fullWidth>
             <Table.Row>              
-              <Table.HeaderCell colspan='4'>
+              <Table.HeaderCell colSpan='4'>
                 <Button floated='right' icon labelPosition='left' size='tiny' onClick={() => dispatch(showDetails())}>
                   <Icon name='plus' /> Details
                 </Button>

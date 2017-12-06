@@ -18,7 +18,7 @@ export default function configureStore(preloadedState = {}) {
       stateLocalIncomeTaxes: 0,
       personalExemptions: 1,
       medical: 0
-    }  
+    }
   }
 
   // preloadedState = {
