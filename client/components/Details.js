@@ -58,7 +58,10 @@ class Details extends Component {
         </Table.Header>,
         <Table.Body>
           <Table.Row>
-            <Table.Cell>AMT Triggered</Table.Cell>
+            <Table.Cell>
+              AMT Triggered
+              <Tooltip type='output' field='AMTActive'/>
+            </Table.Cell>
             <Table.Cell>{resultsCurrent.AMTActive ? 'YES' : ''}</Table.Cell>
             <Table.Cell>{resultsHouse.AMTActive ? 'YES' : ''}</Table.Cell>
             <Table.Cell>{resultsSenate.AMTActive ? 'YES' : ''}</Table.Cell>
