@@ -1,8 +1,14 @@
 const webpack = require('webpack');
+require("babel-polyfill");
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 const config = {
-  entry: './client/startup/TaxCalculatorApp',
+  entry: [
+    'es5-shim/es5-shim',
+    'es5-shim/es5-sham',
+    'babel-polyfill',
+    './client/startup/TaxCalculatorApp'
+  ],
   output: {
     path: __dirname + '/public',
     filename: 'bundle.js'
