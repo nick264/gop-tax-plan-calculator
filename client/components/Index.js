@@ -6,20 +6,20 @@ import { Container, Header, Segment, Grid, Icon, Divider, Menu, Image, Button, D
 // import IconCalculator from 'react-icons/lib/fa/calculator'
 // import IconList from 'react-icons/lib/fa/list'
 
+import styles from '../css/stickyFooter.css'
+
 import { revealResults, toggleChartEffectiveRate } from '../actions/ui'
 import { calculateFromInputs } from '../utils/calculator'
 
 import Result from './Result'
 import Inputs from './Inputs'
 import ChartIncomeSensitivity from './ChartIncomeSensitivity'
-
-// import 'semantic-ui-css/semantic.min.css'
+import SocialShare from './SocialShare'
 
 class Index extends Component {
   constructor(props) {
     super(props)
-  }
-  
+  }  
   
   _inputsComplete() {
     // kind of hacky - just calculate results to see if they compute
@@ -30,18 +30,17 @@ class Index extends Component {
   render() {
     const { ui, dispatch } = this.props
     return(
-      <div>
-        <Menu inverted>
+      <div className={styles.Site}>
+        <Menu inverted size='large'>
           <Container>
             <Menu.Item as='a' header>
-              <Image
-                size='mini'
-                src='https://react.semantic-ui.com/logo.png'
-                style={{ marginRight: '1.5em' }}
+              <Icon
+                name='money'
+                size='big'
+                style={{color: '#216C2A'}}
               />
-              Home
+              Tax Calculator
             </Menu.Item>
-            <Menu.Item as='a' position='right'>About</Menu.Item>
           </Container>
         </Menu>
 
@@ -54,7 +53,7 @@ class Index extends Component {
           </Header>
         </Container>
         <Divider section/>
-        <Container>
+        <Container className={styles['Site-content']}>
           <Grid>
             <Grid.Row centered columns={2}>
               <Grid.Column>
@@ -106,6 +105,24 @@ class Index extends Component {
             </Grid.Row>
           </Grid>
         </Container>
+        <Segment inverted vertical>
+          <Container>
+            <Grid verticalAlign='middle'>
+              <Grid.Row columns={2}>
+                <Grid.Column>
+                  <SocialShare/>
+                </Grid.Column>
+                <Grid.Column>
+                  <div style={{float: 'right', textAlign: 'right'}}>
+                    By Ben Carr and Nick Sedlet
+                    <br/>
+                    <a href='https://github.com/nick264/gop-tax-plan-calculator' target='_blank'>View on Github</a>
+                  </div>
+                </Grid.Column>
+              </Grid.Row>
+            </Grid>
+          </Container>
+        </Segment>
       </div>
     )
   }
