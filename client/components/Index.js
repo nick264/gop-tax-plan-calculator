@@ -114,7 +114,7 @@ class Index extends Component {
                 </Grid.Column>
                 <Grid.Column>
                   <div style={{float: 'right', textAlign: 'right'}}>
-                    By Ben Carr and Nick Sedlet
+                    By {_.sortBy(['Ben Carr', 'Nick Sedlet'],function() { return Math.random() }).join(' and ')}
                     <br/>
                     <a href='https://github.com/nick264/gop-tax-plan-calculator' target='_blank'>View on Github</a>
                   </div>

@@ -4,7 +4,7 @@ const DESCRIPTIONS = {
     "FilingStatus": "Whether you file as 'single' or 'married filing jointly'. We do not currently support other filing statuses such as 'married filing seperately' or 'head of household'.",
     "Itemize": "Whether you want to itemize your deductions or claim the standard deduction. Generally you will want to itemize your deductions if their combined amount exceeds the standard deduction. To see standard deduction amounts, look at expanded results.",
     "DependentChildren": "The number of chidren you claim as dependents (ages 0-16).",
-    "PersonalExemptions": "All dependents inlcuding YOURSELF, spouse, seniors and dependent children of all ages. INCLUDE dependent children that were counted above.",
+    "PersonalExemptions": "All dependents including YOURSELF, spouse, seniors and dependent children of all ages. INCLUDE dependent children that were counted above.",
     "MortgageInterest": "The amount of interest you pay on your mortgage.",
     "Charity": "The amount of tax-deductible donations to charity.",
     "SALTProperty": "State and local property taxes.",
