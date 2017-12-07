@@ -39,6 +39,7 @@ class Details extends Component {
       <Table.Body>
         <DetailsRow name='Standard Deduction' field='StandardDeduction' data={data}/> 
         <DetailsRow name='Mortgage Interest Deduction' field='MortgageInterest' data={data}/> 
+        <DetailsRow name='Charitable Donations Deduction' field='Charity' data={data}/> 
         <DetailsRow name='State and Local Property Tax Deduction' field='SALTProperty' data={data}/> 
         <DetailsRow name='State and Local Income Tax Deduction' field='SALTIncome' data={data}/> 
         <DetailsRow name='Student Loan Interest Deduction' field='StudentLoanDeduction' data={data}/> 
