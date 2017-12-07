@@ -78,6 +78,7 @@ class Details extends Component {
       </Table.Header>,
       <Table.Body>
         <DetailsRow name='Child Tax Credit' field='ChildTaxCredit' data={data}/> 
+        <DetailsRow name='Family Tax Credit' field='FamilyTaxCredit' data={data}/> 
       </Table.Body>,
       <Table.Header>
         <DetailsRow name='Total Tax' field='TotalTax' data={data} header/> 

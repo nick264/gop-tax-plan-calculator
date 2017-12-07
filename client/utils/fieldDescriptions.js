@@ -24,6 +24,7 @@ const DESCRIPTIONS = {
     "TotalTaxExAMT": "The amount of tax you will pay under a given plan, ignoring AMT rules.",
     "EffectiveTaxRate": "Your average tax bracket. This is your tax divided by your taxable income.",
     "ChildTaxCredit": "The amount of Child Tax Credits which are applicable to you. Higher income filers qualify for less of a credit.",
+    "FamilyTaxCredit": "The amount of Family Tax Credits which are applicable to you. House tax plan only. Higher income filers qualify for less of a credit.",
     "AMTIncome": "The income on which your AMT will be assessed, i.e. gross income less AMT exemption.",
     "AMT": "The minimum amount of tax you will pay based on AMT rules.",
     "AMTActive": "Whether or not your final tax payment is governed by AMT rather than regular tax rules.",
