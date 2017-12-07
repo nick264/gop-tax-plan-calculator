@@ -17,7 +17,8 @@ export default function configureStore(preloadedState = {}) {
       stateLocalPropertyTaxes: 0,
       stateLocalIncomeTaxes: 0,
       personalExemptions: 1,
-      medical: 0
+      medical: 0,
+      studentLoanInterest: 0,
     }
   }
 

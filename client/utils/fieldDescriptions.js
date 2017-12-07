@@ -1,16 +1,17 @@
 const DESCRIPTIONS = {
   "input": {
-    "GrossIncome": "This is your total income less IRA and 401k contributions. 529 contributions are not deductible from federal taxes.",
+    "GrossIncome": "This is your total income less IRA and 401k contributions. 529 contributions are not deductible from federal taxes. Include short term capital gains.",
     "FilingStatus": "Whether you file as 'single' or 'married filing jointly'. We do not currently support other filing statuses such as 'married filing seperately' or 'head of household'.",
     "Itemize": "Whether you want to itemize your deductions or claim the standard deduction. Generally you will want to itemize your deductions if their combined amount exceeds the standard deduction. To see standard deduction amounts, look at expanded results.",
     "DependentChildren": "The number of chidren you claim as dependents (ages 0-16).",
     "PersonalExemptions": "All dependents including YOURSELF, spouse, seniors and dependent children of all ages. INCLUDE dependent children that were counted above.",
     "MortgageInterest": "The amount of interest you pay on your mortgage.",
     "Charity": "The amount of tax-deductible donations to charity.",
-    "SALTProperty": "State and local property taxes.",
+    "SALTProperty": "Property taxes.",
     "Medical": "Total out-of-pocket medical expenses. We'll work out whether they are deductible. These are only deductible if they exceed 10% of your gross income, and are never deductible under the House plan.",
     "SALTIncome": "State and local income taxes paid. For now enter this number manually. We are looking at calculating state tax automatically.",
-  },
+    "StudentLoanInterest": "The total amount of student loan interest you pay. We'll work out how much is deductible.",
+    },
   "output": {
     "StandardDeduction": "The amount everyone is allowed to deduct. If you selected itemized deductions, those will be used instead of the standard deduction.",
     "MortgageInterest": "The amount of mortgage interest that can be deducted under a given tax plan.",
@@ -28,7 +29,13 @@ const DESCRIPTIONS = {
     "AMTActive": "Whether or not your final tax payment is governed by AMT rather than regular tax rules.",
     "TotalTaxPreCredits": "The amount of tax you will pay under a given plan before tax credits are factored in.",
     "TotalTax": "The amount of tax you will pay under a given plan.",
-    "EffectiveTaxRateOnGross": "Your effective tax rate based on your gross income."
+    "EffectiveTaxRateOnGross": "Your effective tax rate based on your gross income.",
+    "StudentLoanDeduction": "The amount of your student loan interest payment that is deductible, if any.",
+  },
+  "other":
+  {
+    "Comment1":"This calculation ignores some taxes for simplicity. These include Long term capital gains tax which are largely unchanged. (Short term capital gains should be included in your total income)"
+
   }
 }
 

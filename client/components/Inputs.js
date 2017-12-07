@@ -183,6 +183,26 @@ class Inputs extends Component {
                   <NumberFormat value={input.medical} thousandSeparator={true} onValueChange={({value}) => this._updateField('medical',value)}/>
                 </Input>
               </Table.Cell>
+            </Table.Row>,
+            <Table.Row>
+              <Table.Cell>
+                <label htmlFor='student'>Student Loan Interest</label>
+                <Tooltip type='input' field='StudentLoanInterest'/>
+              </Table.Cell>
+              <Table.Cell>
+                <Input 
+                  type='text'
+                  id='student'
+                  labelPosition='left'
+                  fluid
+                >
+                  <Label
+                    basic
+                    content='$'
+                  />
+                  <NumberFormat value={input.studentLoanInterest} thousandSeparator={true} onValueChange={({value}) => this._updateField('studentLoanInterest',value)}/>
+                </Input>
+              </Table.Cell>
             </Table.Row>
           ]
         }

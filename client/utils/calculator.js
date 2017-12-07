@@ -19,22 +19,22 @@ function calc_tax(amount, brackets) {
 }
 
 var current_single = [
-  [9325, 10],
-  [37950, 15],
-  [91900, 25],
-  [191650, 28],
-  [416700, 33],
-  [418400, 35],
+  [9525, 10],
+  [38700, 15], //Forbes latest 2018 I think
+  [93700, 25],
+  [195450, 28],
+  [424950, 33],
+  [426700, 35],
   [1e20, 39.6]
 ];
 
 var current_married = [
-  [18650, 10],
-  [75900, 15],
-  [153100, 25],
-  [233350, 28],
-  [416700, 33],
-  [470700, 35],
+  [19050, 10],
+  [77400, 15],
+  [156150, 25],
+  [237950, 28], //Forbes latest 2018 I think
+  [424950, 33],
+  [480050, 35],
   [1e20, 39.6]
 ];
 
@@ -77,32 +77,40 @@ var rules = {
   "Single":{
   "Brackets":current_single,
   "StandardDeduction":6350,
-  "PersonalExemption":4050,
+  "PersonalExemption":4150,
   "PersonalExemptionPhaseOut":266700,
   "ChildTaxCredit":1000,
   "ChildTaxCreditPhaseOut":75000,
+  "FamilyTaxCredit":0,
   "AMTExemption":54300,
   "AMTPhaseOut":120700,
   "AMTHighThreshold":187800,
   "AMTRelevant":true,
   "MedicalExpenseThreshold":10,
   "AMTMedicalExpenseThreshold":7.5,
+  "StudentLoanDeductible":true,
+  "StudentLoanPhaseOutStart":65000,
+  "StudentLoanPhaseOutEnd":80000,
   
   },
   "Married":{
   "Brackets":current_married,
   "StandardDeduction":12700,
-  "PersonalExemption":4050,
+  "PersonalExemption":4150,
   "PersonalExemptionPhaseOut":320000,
   "ChildTaxCredit":1000,
   "ChildTaxCreditPhaseOut":115000,
+  "FamilyTaxCredit":0,
   "AMTExemption":84500,
   "AMTPhaseOut":160900,
   "AMTHighThreshold":187800,
   "AMTRelevant":true,
   "MedicalExpenseThreshold":10,
   "AMTMedicalExpenseThreshold":7.5,
-
+  "StudentLoanDeductible":true,
+  "StudentLoanPhaseOutStart":130000,
+  "StudentLoanPhaseOutEnd":160000,
+  
   }},
  "House": {
   "Single":{
@@ -112,6 +120,7 @@ var rules = {
   "PersonalExemptionPhaseOut":320000,
   "ChildTaxCredit":1600,
   "ChildTaxCreditPhaseOut":115000, //https://www.cbpp.org/research/federal-tax/house-tax-bills-child-tax-credit-increase-excludes-thousands-of-children-in-low
+  "FamilyTaxCredit":300,
   "AMTRelevant":false,
   "MedicalExpenseThreshold":1e7,
   "AMTMedicalExpenseThreshold":1e6,
@@ -123,9 +132,11 @@ var rules = {
   "PersonalExemptionPhaseOut":320000,
   "ChildTaxCredit":1600,
   "ChildTaxCreditPhaseOut":230000,
+  "FamilyTaxCredit":300,
   "AMTRelevant":false,
   "MedicalExpenseThreshold":1e6,
   "AMTMedicalExpenseThreshold":1e6,
+  "StudentLoanDeductible":false,
   }},
  "Senate": {
   "Single":{
@@ -135,6 +146,7 @@ var rules = {
   "PersonalExemptionPhaseOut":320000, //unused
   "ChildTaxCredit":2000,
   "ChildTaxCreditPhaseOut":500000, //https://www.cbpp.org/research/federal-tax/senate-tax-bills-child-tax-credit-increase-provides-only-token-help-to-millions
+  "FamilyTaxCredit":0,
   "AMTExemption":70300,
   "AMTPhaseOut":156300,
 //  "AMTExemption":54300/50600 * 70300,
@@ -142,6 +154,7 @@ var rules = {
   "AMTRelevant":true,
   "MedicalExpenseThreshold":10,
   "AMTMedicalExpenseThreshold":7.5,
+  "StudentLoanDeductible":false,
   },
   "Married":{
   "Brackets":senate_married,
@@ -150,6 +163,7 @@ var rules = {
   "PersonalExemptionPhaseOut":320000,
   "ChildTaxCredit":2000,
   "ChildTaxCreditPhaseOut":500000,
+  "FamilyTaxCredit":0,
   "AMTExemption":109400,
   "AMTPhaseOut":208400,
 //  "AMTExemption":84500/78750*109400,
@@ -158,6 +172,7 @@ var rules = {
   "AMTRelevant":true,
   "MedicalExpenseThreshold":10,
   "AMTMedicalExpenseThreshold":7.5,
+  "StudentLoanDeductible":false,
   }},
   
 }
@@ -199,14 +214,24 @@ function calc_taxes(inputs) {
       outputs.SALTProperty = inputs.SALTProperty
       outputs.SALTIncome = inputs.SALTIncome
     }
-    outputs.TotalDeductions = outputs.SALTIncome+outputs.SALTProperty+outputs.Charity+outputs.MortgageInterest+outputs.Medical
+
+    if (relevant_rules.StudentLoanDeductible) {
+      outputs.StudentLoanDeduction = Math.min(2000, inputs.StudentLoanInterest ) + Math.min(500, (inputs.StudentLoanInterest - 2000)*.25 )    
+      outputs.StudentLoanDeduction *= Math.max(0,Math.min(1, (relevant_rules.StudentLoanPhaseOutEnd - inputs.GrossIncome) / (relevant_rules.StudentLoanPhaseOutEnd - relevant_rules.StudentLoanPhaseOutStart)))
+    }
+    else
+      outputs.StudentLoanDeduction = 0
+
+    outputs.TotalDeductions = outputs.SALTIncome+outputs.SALTProperty+outputs.Charity+outputs.MortgageInterest+outputs.Medical+outputs.StudentLoanDeduction
 
   }
   else {
     outputs.TotalDeductions = relevant_rules.StandardDeduction 
   }
   outputs.StandardDeduction = relevant_rules.StandardDeduction 
-  
+
+
+
   outputs.PersonalExemptions = inputs.PersonalExemptions
   var pe =  inputs.PersonalExemptions * relevant_rules.PersonalExemption
   outputs.PersonalExemptionAmount = reduce(pe, inputs.GrossIncome, relevant_rules.PersonalExemptionPhaseOut, 2500, 2, false)
@@ -222,7 +247,10 @@ function calc_taxes(inputs) {
     outputs.EffectiveTaxRate = outputs.TotalTaxExAMT / outputs.TaxableIncome;
   }
   var ctc =  inputs.DependentChildren * relevant_rules.ChildTaxCredit
+  var ftc =  (inputs.PersonalExemptions - inputs.DependentChildren) * relevant_rules.FamilyTaxCredit
+  
   outputs.ChildTaxCredit = reduce(ctc, inputs.GrossIncome, relevant_rules.ChildTaxCreditPhaseOut, 1000, 50 * inputs.DependentChildren, true)
+  outputs.FamilyTaxCredit = reduce(ftc, inputs.GrossIncome, relevant_rules.ChildTaxCreditPhaseOut, 1000, 50 * inputs.DependentChildren, true)
 
   if (relevant_rules.AMTRelevant ) {
     outputs.AMTMedical = Math.max(0, inputs.Medical - inputs.GrossIncome * relevant_rules.AMTMedicalExpenseThreshold / 100 )
@@ -246,7 +274,7 @@ function calc_taxes(inputs) {
     outputs.AMTActive = false
     outputs.TotalTaxPreCredits = outputs.TotalTaxExAMT  
   }
-  outputs.TotalTax = outputs.TotalTaxPreCredits - outputs.ChildTaxCredit
+  outputs.TotalTax = outputs.TotalTaxPreCredits - outputs.ChildTaxCredit - outputs.FamilyTaxCredit
   outputs.EffectiveTaxRateOnGross = outputs.TotalTax / outputs.GrossIncome;
   
   return outputs;
@@ -273,7 +301,7 @@ function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
 }
 
-export function calculateFromInputs({grossIncome, filingStatus, itemize, dependentChildrenCount, mortgageInterest, charitableDonations, stateLocalPropertyTaxes, stateLocalIncomeTaxes, personalExemptions, medical }, plan) {
+export function calculateFromInputs({grossIncome, filingStatus, itemize, dependentChildrenCount, mortgageInterest, charitableDonations, stateLocalPropertyTaxes, stateLocalIncomeTaxes, personalExemptions, medical, studentLoanInterest }, plan) {
   return calc_taxes({
     GrossIncome: parseInt(grossIncome),
     FilingStatus: capitalizeFirstLetter(filingStatus),
@@ -285,6 +313,7 @@ export function calculateFromInputs({grossIncome, filingStatus, itemize, depende
     SALTProperty: parseInt(stateLocalPropertyTaxes),
     SALTIncome: parseInt(stateLocalIncomeTaxes),
     Medical: parseInt(medical),
-    Plan: plan
+    Plan: plan,
+    StudentLoanInterest: parseInt(studentLoanInterest)
   })
 }
