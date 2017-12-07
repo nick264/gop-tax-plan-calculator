@@ -49,7 +49,7 @@ const getData = ({input,field,absOrDiffs}) => {
   const numSteps = Math.ceil(input.grossIncome * 2 / xStep)
   
   const currentValue = calculateFromInputs(input,'Current')[field]
-  
+  const stateTaxRate = input.stateLocalIncomeTaxes / input.grossIncome
   let retval = []
   
   if(absOrDiffs) {
@@ -69,7 +69,7 @@ const getData = ({input,field,absOrDiffs}) => {
   
   for( var n = 0; n <= numSteps; n++ ) {
     const thisGrossIncome = n * xStep
-    let thisInput = Object.assign({},input,{grossIncome: thisGrossIncome})
+    let thisInput = Object.assign({},input,{grossIncome: thisGrossIncome, stateLocalIncomeTaxes:stateTaxRate*thisGrossIncome})
     const resultCurrent = calculateFromInputs(thisInput,'Current')
     const resultHouse = calculateFromInputs(thisInput,'House')
     const resultSenate = calculateFromInputs(thisInput,'Senate')
