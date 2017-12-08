@@ -137,9 +137,6 @@ class ChartIncomeSensitivity extends Component {
   }
   
   componentDidUpdate() {
-    console.log('calling component did mount')
-    console.log('this.refs = ', this.refs)
-    
     setTimeout(this._addLine.bind(this),250)      
   }
   
@@ -163,7 +160,6 @@ class ChartIncomeSensitivity extends Component {
       field: this.rateOrDollars ? 'EffectiveTaxRateOnGross' : 'TotalTax',
       absOrDiffs: this.absOrDiffs
     })
-    console.log(this.data)
     
     const yAxis = this.rateOrDollars ?
       {

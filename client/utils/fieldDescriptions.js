@@ -15,6 +15,7 @@ const DESCRIPTIONS = {
   "output": {
     "StandardDeduction": "The amount everyone is allowed to deduct. If you selected itemized deductions, those will be used instead of the standard deduction.",
     "MortgageInterest": "The amount of mortgage interest that can be deducted under a given tax plan.",
+    "Charity": "The amount of charitable donations that can be deducted under a given tax plan.",
     "SALTProperty": "The amount of state and local property taxes that are allowable deductions for a given tax plan.",
     "SALTIncome": "The amount of state and local income taxes that are allowable deductions for a given tax plan.",
     "TotalDeductions": "The sum of all applicable deductions (SALT Property, SALT Income, Mortage Interest and Donations).",

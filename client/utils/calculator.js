@@ -254,8 +254,8 @@ function calc_taxes(inputs) {
   var ctc =  inputs.DependentChildren * relevant_rules.ChildTaxCredit
   var ftc =  (inputs.PersonalExemptions - inputs.DependentChildren) * relevant_rules.FamilyTaxCredit
   
-  outputs.ChildTaxCredit = reduce(ctc, inputs.GrossIncome, relevant_rules.ChildTaxCreditPhaseOut, 1000, 50 * inputs.DependentChildren, true)
-  outputs.FamilyTaxCredit = reduce(ftc, inputs.GrossIncome, relevant_rules.ChildTaxCreditPhaseOut, 1000, 50 * inputs.DependentChildren, true)
+  outputs.ChildTaxCredit = reduce(ctc, inputs.GrossIncome, relevant_rules.ChildTaxCreditPhaseOut, 1000, 50, true)
+  outputs.FamilyTaxCredit = reduce(ftc, inputs.GrossIncome, relevant_rules.ChildTaxCreditPhaseOut, 1000, 50, true)
 
   if (relevant_rules.AMTRelevant ) {
     outputs.AMTMedical = Math.max(0, inputs.Medical - inputs.GrossIncome * relevant_rules.AMTMedicalExpenseThreshold / 100 )
