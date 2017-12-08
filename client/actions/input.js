@@ -8,7 +8,8 @@ const INTEGER_FIELDS = [
   'stateLocalIncomeTaxes',
   'personalExemptions',
   'dependentChildrenCount',
-  'medical'
+  'medical',
+  'studentLoanInterest'
 ]
 
 export function updateInputField(field,value) {
