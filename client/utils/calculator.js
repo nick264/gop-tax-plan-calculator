@@ -77,6 +77,19 @@ var senate_married = [
   [1e20, 38.5]
 ];
 
+var eitc_single ={
+'IncomeAtMaxCredit':[6800,10200,14320,14320], //https://taxfoundation.org/2018-tax-brackets
+'MaxCredit':[520,3468,5728,6444],//https://taxfoundation.org/2018-tax-brackets
+'PhaseoutBegins':[8510,18700,18700,18700],//https://taxfoundation.org/2018-tax-brackets
+'PhaseoutEnds':[15310,40402,45898,49298],//https://taxfoundation.org/2018-tax-brackets
+}
+var eitc_married ={
+'IncomeAtMaxCredit':[6800,10200,14320,14320],//https://taxfoundation.org/2018-tax-brackets
+'MaxCredit':[520,3468,5728,6444],//https://taxfoundation.org/2018-tax-brackets
+'PhaseoutBegins':[14200,24400,24400,24400],//https://taxfoundation.org/2018-tax-brackets
+'PhaseoutEnds':[21000,46102,51598,54998],//https://taxfoundation.org/2018-tax-brackets
+}
+
 var rules = {
  "Current": {
   "Single":{
@@ -87,16 +100,18 @@ var rules = {
   "ChildTaxCredit":1000,
   "ChildTaxCreditPhaseOut":75000,
   "FamilyTaxCredit":0,
-  "AMTExemption":54300,
-  "AMTPhaseOut":120700,
-  "AMTHighThreshold":187800,
   "AMTRelevant":true,
+  "AMTExemption":55400, //https://taxfoundation.org/2018-tax-brackets
+  "AMTPhaseOut":123100,//https://taxfoundation.org/2018-tax-brackets
+  "AMTHighThreshold":191500,//https://taxfoundation.org/2018-tax-brackets
   "MedicalExpenseThreshold":10,
   "AMTMedicalExpenseThreshold":7.5,
   "StudentLoanDeductible":true,
-  "StudentLoanPhaseOutStart":65000,
-  "StudentLoanPhaseOutEnd":80000,
-  
+  "StudentLoanPhaseOutStart":65000, //https://www.huffingtonpost.com/aryea-aranoff/student-loan-interest-ded_b_7486888.html
+  "StudentLoanPhaseOutEnd":80000, //https://www.irs.gov/publications/p970#en_US_2016_publink1000178230
+  "PeaseLimitation":true,
+  "PeaseThreshold":258250, //https://www.scottkays.com/article/2015/04/09/pease-limitation-explained
+  "EITCData":eitc_single,
   },
   "Married":{
   "Brackets":current_married,
@@ -106,15 +121,18 @@ var rules = {
   "ChildTaxCredit":1000,
   "ChildTaxCreditPhaseOut":115000,
   "FamilyTaxCredit":0,
-  "AMTExemption":84500,
-  "AMTPhaseOut":160900,
-  "AMTHighThreshold":187800,
   "AMTRelevant":true,
+  "AMTExemption":86200,//https://taxfoundation.org/2018-tax-brackets
+  "AMTPhaseOut":164100,//https://taxfoundation.org/2018-tax-brackets
+  "AMTHighThreshold":191500,//https://taxfoundation.org/2018-tax-brackets
   "MedicalExpenseThreshold":10,
   "AMTMedicalExpenseThreshold":7.5,
   "StudentLoanDeductible":true,
   "StudentLoanPhaseOutStart":130000,
   "StudentLoanPhaseOutEnd":160000,
+  "PeaseLimitation":true,
+  "PeaseThreshold":309000, //https://www.scottkays.com/article/2015/04/09/pease-limitation-explained
+  "EITCData":eitc_married,
   
   }},
  "House": {
@@ -129,6 +147,8 @@ var rules = {
   "AMTRelevant":false,
   "MedicalExpenseThreshold":1e7,
   "AMTMedicalExpenseThreshold":1e6,
+  "PeaseLimitation":false,
+  "EITCData":eitc_single,
  },
   "Married":{
   "Brackets":house_married,
@@ -142,6 +162,8 @@ var rules = {
   "MedicalExpenseThreshold":1e6,
   "AMTMedicalExpenseThreshold":1e6,
   "StudentLoanDeductible":false,
+  "PeaseLimitation":false,
+  "EITCData":eitc_married,
   }},
  "Senate": {
   "Single":{
@@ -160,6 +182,8 @@ var rules = {
   "MedicalExpenseThreshold":10,
   "AMTMedicalExpenseThreshold":7.5,
   "StudentLoanDeductible":false,
+  "PeaseLimitation":false,
+  "EITCData":eitc_single,
   },
   "Married":{
   "Brackets":senate_married,
@@ -178,6 +202,8 @@ var rules = {
   "MedicalExpenseThreshold":10,
   "AMTMedicalExpenseThreshold":7.5,
   "StudentLoanDeductible":false,
+  "PeaseLimitation":false,
+  "EITCData":eitc_married,
   }},
   
 }
@@ -227,17 +253,24 @@ function calc_taxes(inputs) {
     }
     else
       outputs.StudentLoanDeduction = 0
+    outputs.NonExemptDeductions = outputs.SALTIncome+outputs.SALTProperty+outputs.Charity+outputs.MortgageInterest+outputs.StudentLoanDeduction
+    outputs.ItemizedDeductionsPrePease = outputs.NonExemptDeductions + outputs.Medical
+    if (relevant_rules.PeaseLimitation) {
+      outputs.PeaseAdjustment = Math.min(.03 * Math.max(0,inputs.GrossIncome - relevant_rules.PeaseThreshold ), .8 * outputs.NonExemptDeductions )
+    }
+    else{
+      outputs.PeaseAdjustment = 0
 
-    outputs.ItemizedDeductions = outputs.SALTIncome+outputs.SALTProperty+outputs.Charity+outputs.MortgageInterest+outputs.Medical+outputs.StudentLoanDeduction
+    }    
+    outputs.ItemizedDeductions = outputs.ItemizedDeductionsPrePease - outputs.PeaseAdjustment
+  
     outputs.TotalDeductions = Math.max(relevant_rules.StandardDeduction, outputs.ItemizedDeductions )
   }
   else {
     outputs.TotalDeductions = relevant_rules.StandardDeduction;
   }
 
-
-
-  outputs.PersonalExemptions = inputs.PersonalExemptions
+   outputs.PersonalExemptions = inputs.PersonalExemptions
   var pe =  inputs.PersonalExemptions * relevant_rules.PersonalExemption
   outputs.PersonalExemptionAmount = reduce(pe, inputs.GrossIncome, relevant_rules.PersonalExemptionPhaseOut, 2500, 2, false)
   outputs.TotalDeductionsAndExemptions = outputs.TotalDeductions+outputs.PersonalExemptionAmount
@@ -251,11 +284,20 @@ function calc_taxes(inputs) {
   else{
     outputs.EffectiveTaxRate = outputs.TotalTaxExAMT / outputs.TaxableIncome;
   }
+  
+  // Tax credits
   var ctc =  inputs.DependentChildren * relevant_rules.ChildTaxCredit
   var ftc =  (inputs.PersonalExemptions - inputs.DependentChildren) * relevant_rules.FamilyTaxCredit
-  
+  var kids = Math.min(inputs.DependentChildren,3)
+  var eitc_data = relevant_rules.EITCData
   outputs.ChildTaxCredit = reduce(ctc, inputs.GrossIncome, relevant_rules.ChildTaxCreditPhaseOut, 1000, 50, true)
   outputs.FamilyTaxCredit = reduce(ftc, inputs.GrossIncome, relevant_rules.ChildTaxCreditPhaseOut, 1000, 50, true)
+  if (inputs.GrossIncome > eitc_data.PhaseoutBegins[kids]){
+    outputs.EITC = eitc_data.IncomeAtMaxCredit[kids] * Math.max(0, eitc_data.PhaseoutEnds[kids] - inputs.GrossIncome ) / ( eitc_data.PhaseoutEnds[kids] - eitc_data.PhaseoutBegins[kids] )
+  }
+  else {
+    outputs.EITC = eitc_data.IncomeAtMaxCredit[kids] * Math.min(1, inputs.GrossIncome / eitc_data.MaxCredit[kids] )
+  }
 
   if (relevant_rules.AMTRelevant ) {
     outputs.AMTMedical = Math.max(0, inputs.Medical - inputs.GrossIncome * relevant_rules.AMTMedicalExpenseThreshold / 100 )
@@ -279,7 +321,7 @@ function calc_taxes(inputs) {
     outputs.AMTActive = false
     outputs.TotalTaxPreCredits = outputs.TotalTaxExAMT  
   }
-  outputs.TotalTax = outputs.TotalTaxPreCredits - outputs.ChildTaxCredit - outputs.FamilyTaxCredit
+  outputs.TotalTax = outputs.TotalTaxPreCredits - outputs.ChildTaxCredit - outputs.FamilyTaxCredit - outputs.EITC
   outputs.EffectiveTaxRateOnGross = outputs.TotalTax / outputs.GrossIncome;
   
   return outputs;

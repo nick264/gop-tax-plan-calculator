@@ -43,6 +43,7 @@ class Details extends Component {
         <DetailsRow name='State and Local Property Tax Deduction' field='SALTProperty' data={data}/> 
         <DetailsRow name='State and Local Income Tax Deduction' field='SALTIncome' data={data}/> 
         <DetailsRow name='Student Loan Interest Deduction' field='StudentLoanDeduction' data={data}/> 
+        <DetailsRow name='Pease Adjustment' field='PeaseAdjustment' data={data}/> 
         <DetailsRow name='Personal Exemption Amount' field='PersonalExemptionAmount' data={data}/> 
       </Table.Body>,
       <Table.Header>          
@@ -80,6 +81,7 @@ class Details extends Component {
       <Table.Body>
         <DetailsRow name='Child Tax Credit' field='ChildTaxCredit' data={data}/> 
         <DetailsRow name='Family Tax Credit' field='FamilyTaxCredit' data={data}/> 
+        <DetailsRow name='Earned Income Tax Credit' field='EITC' data={data}/> 
       </Table.Body>,
       <Table.Header>
         <DetailsRow name='Total Tax' field='TotalTax' data={data} header/> 

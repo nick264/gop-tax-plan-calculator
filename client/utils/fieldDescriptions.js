@@ -26,13 +26,15 @@ const DESCRIPTIONS = {
     "EffectiveTaxRate": "Your average tax bracket. This is your tax divided by your taxable income.",
     "ChildTaxCredit": "The amount of Child Tax Credits which are applicable to you. Higher income filers qualify for less of a credit.",
     "FamilyTaxCredit": "The amount of Family Tax Credits which are applicable to you. House tax plan only. Higher income filers qualify for less of a credit.",
+    "EITC": "The amount of earned income tax credit for which you are eligible. This tax credit is designed to provide extra reward for incremental income for low wage earners, especially families.",
     "AMTIncome": "The income on which your AMT will be assessed, i.e. gross income less AMT exemption.",
     "AMT": "The minimum amount of tax you will pay based on AMT rules.",
     "AMTActive": "Whether or not your final tax payment is governed by AMT rather than regular tax rules.",
     "TotalTaxPreCredits": "The amount of tax you will pay under a given plan before tax credits are factored in.",
-    "TotalTax": "The amount of tax you will pay under a given plan.",
+    "TotalTax": "The amount of tax you will pay under a given plan. Negative signs denote a tax credit to you.",
     "EffectiveTaxRateOnGross": "Your effective tax rate based on your gross income.",
     "StudentLoanDeduction": "The amount of your student loan interest payment that is deductible, if any.",
+    "PeaseAdjustment":"An adjustment which reduces the size of your deductions."
   },
   "other":
   {
