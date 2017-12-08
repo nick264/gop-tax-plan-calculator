@@ -1,22 +1,27 @@
+function calc_tax_old(amount, brackets) {
+  var tax = 0
+  var last_bracket = 0
+  for (var j = 0; j < brackets.length; j+=1) { 
+    if (brackets[j][0] < amount ) {
+      tax += (brackets[j][0] - last_bracket) * brackets[j][1] * .01;
+      last_bracket= brackets[j][0];
+    }
+    else {
+      tax += (amount - last_bracket) * brackets[j][1] * .01;
+      break
+    }
+  }
+  return tax;
+}
+
 function calc_tax(amount, brackets) {
   var tax = 0
-    var last_bracket = 0
-    for (var j = 0; j < brackets.length; j+=1) { 
-    if (brackets[j][0] < amount ) {
-          tax += (brackets[j][0] - last_bracket) * brackets[j][1] * .01;
-            last_bracket= brackets[j][0];
-        }
-        else {
-          tax += (amount - last_bracket) * brackets[j][1] * .01;
-            break
-        }
-  }
-
+  for (var j = 0; brackets[j][0] < amount; j+=1)
+    tax += ( brackets[j][0] - ((j == 0 ) ? 0 : brackets[j-1][0])) * brackets[j][1] * .01;
+  tax += ( amount - ((j == 0 ) ? 0 : brackets[j-1][0])) * brackets[j][1] * .01;
   return tax;
-  
-    
-
 }
+
 
 var current_single = [
   [9525, 10],
@@ -200,6 +205,7 @@ function calc_taxes(inputs) {
   var outputs={};
   var sum_deductions=0
   var relevant_rules = rules[inputs.Plan][inputs.FilingStatus]
+  outputs.StandardDeduction = relevant_rules.StandardDeduction 
   if (inputs.Itemize){
     outputs.MortgageInterest = inputs.MortgageInterest
     outputs.Charity = inputs.Charity
@@ -222,13 +228,12 @@ function calc_taxes(inputs) {
     else
       outputs.StudentLoanDeduction = 0
 
-    outputs.TotalDeductions = outputs.SALTIncome+outputs.SALTProperty+outputs.Charity+outputs.MortgageInterest+outputs.Medical+outputs.StudentLoanDeduction
-
+    outputs.ItemizedDeductions = outputs.SALTIncome+outputs.SALTProperty+outputs.Charity+outputs.MortgageInterest+outputs.Medical+outputs.StudentLoanDeduction
+    outputs.TotalDeductions = Math.max(relevant_rules.StandardDeduction, outputs.ItemizedDeductions )
   }
   else {
-    outputs.TotalDeductions = relevant_rules.StandardDeduction 
+    outputs.TotalDeductions = relevant_rules.StandardDeduction;
   }
-  outputs.StandardDeduction = relevant_rules.StandardDeduction 
 
 
 
