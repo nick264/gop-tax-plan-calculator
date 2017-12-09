@@ -248,7 +248,7 @@ function calc_taxes(inputs) {
     }
 
     if (relevant_rules.StudentLoanDeductible) {
-      outputs.StudentLoanDeduction = Math.min(2000, inputs.StudentLoanInterest ) + Math.min(500, (inputs.StudentLoanInterest - 2000)*.25 )    
+      outputs.StudentLoanDeduction = Math.min(2000, inputs.StudentLoanInterest ) + Math.max(0, Math.min(500, (inputs.StudentLoanInterest - 2000)*.25 ) )   
       outputs.StudentLoanDeduction *= Math.max(0,Math.min(1, (relevant_rules.StudentLoanPhaseOutEnd - inputs.GrossIncome) / (relevant_rules.StudentLoanPhaseOutEnd - relevant_rules.StudentLoanPhaseOutStart)))
     }
     else
