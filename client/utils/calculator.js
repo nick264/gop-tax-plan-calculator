@@ -256,7 +256,7 @@ function calc_taxes(inputs) {
     outputs.NonExemptDeductions = outputs.SALTIncome+outputs.SALTProperty+outputs.Charity+outputs.MortgageInterest+outputs.StudentLoanDeduction
     outputs.ItemizedDeductionsPrePease = outputs.NonExemptDeductions + outputs.Medical
     if (relevant_rules.PeaseLimitation) {
-      outputs.PeaseAdjustment = Math.min(.03 * Math.max(0,inputs.GrossIncome - relevant_rules.PeaseThreshold ), .8 * outputs.NonExemptDeductions )
+      outputs.PeaseAdjustment = Math.max(0,Math.min(.03 * Math.max(0,inputs.GrossIncome - relevant_rules.PeaseThreshold ), .8 * outputs.NonExemptDeductions ) )
     }
     else{
       outputs.PeaseAdjustment = 0
